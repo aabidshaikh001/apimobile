@@ -155,77 +155,75 @@ class User {
     }
   }
 
-  // Update user profile
   static async updateProfile(userId, userData) {
     try {
       const pool = await connectToDB()
-
+  
+      // Remove 'id' from userData to avoid duplicate parameter error
+      if ("id" in userData) {
+        delete userData.id
+      }
+  
       // Build dynamic update query based on provided fields
       const updateFields = []
-      const request = pool.request().input("id", sql.VarChar, userId)
-
+      const request = pool.request()
+  
+      request.input("id", sql.VarChar, userId) // ✅ Declare "id" only once
+  
       // Process each field that needs to be updated
       for (const [key, value] of Object.entries(userData)) {
-        // Skip document array as it's handled separately
-        if (key === "document") continue
-
+        if (key === "document") continue // Skip documents (handled separately)
+  
         if (value !== undefined && value !== null) {
           updateFields.push(`${key} = @${key}`)
-
-          // Use appropriate SQL type based on field name
-          if (key === "createdAt" || key === "updatedAt") {
-            request.input(key, sql.DateTime, value)
-          } else {
-            request.input(key, sql.NVarChar, value)
-          }
+          request.input(key, sql.NVarChar, value)
         }
       }
-
+  
       // Only proceed if there are fields to update
       if (updateFields.length > 0) {
         updateFields.push(`updatedAt = GETDATE()`)
-
+  
         const updateQuery = `
           UPDATE users
           SET ${updateFields.join(", ")}
           WHERE id = @id
         `
-
-        console.log("Update query:", updateQuery)
         await request.query(updateQuery)
       }
-
+  
       // Handle document array separately if provided
       if (userData.document && Array.isArray(userData.document)) {
-        // First delete existing documents
-        await pool
-          .request()
-          .input("userId", sql.VarChar, userId)
-          .query(`DELETE FROM user_documents WHERE userId = @userId`)
-
-        // Then insert new documents
+        // Delete existing documents using a new request object
+        const deleteRequest = pool.request()
+        deleteRequest.input("userId", sql.VarChar, userId)
+        await deleteRequest.query(`DELETE FROM user_documents WHERE userId = @userId`)
+  
+        // Insert new documents with new request objects
         for (const docUrl of userData.document) {
           if (docUrl) {
             const docId = this.generateUUID()
-            await pool
-              .request()
-              .input("id", sql.VarChar, docId)
-              .input("userId", sql.VarChar, userId)
-              .input("documentUrl", sql.NVarChar, docUrl)
-              .query(`
+            const insertRequest = pool.request() // ✅ New request object
+            insertRequest.input("docId", sql.VarChar, docId) // Changed parameter name
+            insertRequest.input("userId", sql.VarChar, userId)
+            insertRequest.input("documentUrl", sql.NVarChar, docUrl)
+  
+            await insertRequest.query(`
               INSERT INTO user_documents (id, userId, documentUrl)
-              VALUES (@id, @userId, @documentUrl)
+              VALUES (@docId, @userId, @documentUrl)
             `)
           }
         }
       }
-
+  
       return { success: true, message: "Profile updated successfully" }
     } catch (error) {
       console.error("Error updating user profile:", error)
       throw error
     }
   }
+  
+  
 
   // Helper method to generate UUID
   static generateUUID() {
