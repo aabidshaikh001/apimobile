@@ -6,20 +6,29 @@ dotenv.config();
 class EmailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT), // Ensure port is a number
-      secure: process.env.EMAIL_SECURE === "true", // Must be false for TLS
+      host: process.env.EMAIL_HOST || "smtp.gmail.com", // Default to Gmail
+      port: Number(process.env.EMAIL_PORT) || 587, // Use port 587 for TLS
+      secure: process.env.EMAIL_SECURE === "true", // false for TLS
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,
       },
       tls: {
-        rejectUnauthorized: false, // Allow self-signed certificates (if needed)
+        rejectUnauthorized: false, // Bypass self-signed certificate issues
       },
+    });
+
+    // Verify SMTP connection
+    this.transporter.verify((error, success) => {
+      if (error) {
+        console.error("❌ SMTP Connection Error:", error);
+      } else {
+        console.log("✅ SMTP Connected Successfully!");
+      }
     });
   }
 
-  // Send OTP email
+  // Send OTP Email
   async sendOTP(email, otp, purpose = "login") {
     try {
       const subject =
@@ -42,14 +51,14 @@ class EmailService {
       `;
 
       const info = await this.transporter.sendMail({
-        from: `"Your App" <${process.env.EMAIL_FROM}>`,
+        from: `"TREC" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`, // Use EMAIL_FROM or fallback to EMAIL_USER
         to: email,
         subject,
         text,
         html,
       });
 
-      console.log("✅ Email sent:", info.messageId);
+      console.log("✅ Email sent successfully:", info.messageId);
       return { success: true, messageId: info.messageId };
     } catch (error) {
       console.error("❌ Error sending email:", error);
