@@ -1,5 +1,4 @@
 import express from "express"
-import cors from "cors"
 import dotenv from "dotenv"
 import morgan from "morgan"
 import connectToDB from "./config/db.js"
@@ -9,9 +8,34 @@ import authRoutes from "./routes/authRoutes.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
 // Add the profile routes
 import profileRoutes from "./routes/profileRoutes.js"
+import proptiesroutes from "./routes/propertyroutes.js"
+import Properties from "./models/Properties.js"
+import AboutProperty from "./models/AboutProperty.js"
+import Amenities from "./models/Amenities.js"
+import BankInfo from "./models/BankInfo.js"
+import Brochure from "./models/brochure.js"
+import BuilderDetails from "./models/BuilderDeatails.js"
+import FloorPlan from "./models/FloorPlan.js"
+import Location from "./models/Location.js"
+import PaymentPlan from "./models/PaymentPlan.js"
+import Ratings from "./models/Rating.js"
+// routes
+import aboutpropertyroutes from "./routes/aboutpropertyroutes.js"
+import amenitiesroutes from "./routes/amenitiesroutes.js"
+import bankinforoutes from "./routes/bankinforoutes.js"
+import brochureRoutes from "./routes/brochureroutes.js"
+import builderDetailsRoutes from "./routes/BuilderDeatailsroutes.js"
+import floorplanroutes from "./routes/FloorPlanroutes.js"
+import locationroutes from "./routes/locationroutes.js"
+import Milestoneroutes from "./routes/Milestoneroutes.js"
+import paymentplanroutes from "./routes/PaymentPlanroutes.js"
+import ratingsroutes from "./routes/Ratingroutes.js"
+
+
 
 // Import debug logger
 import debugLogger from "./utils/debugLogger.js"
+import Milestone from "./models/Milestone.js"
 
 // Load environment variables
 dotenv.config()
@@ -21,13 +45,6 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 // Add CORS configuration
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || "https://realestateapp-git-master-mohammad-aabids-projects.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-)
 
 // Middleware
 app.use(express.json({ limit: "10mb" })) // Increase JSON payload limit
@@ -50,6 +67,17 @@ const initDB = async () => {
     await connectToDB()
     await User.createTable()
     await OTP.createTable()
+    await Properties.createTable()
+    await AboutProperty.createTable()
+    await Amenities.createTable()
+    await BankInfo.createTable()
+    await Brochure.createTable()
+    await BuilderDetails.createTable()
+    await FloorPlan.createTable()
+    await Location.createTable()
+    await PaymentPlan.createTable()
+    await Ratings.createTable()
+    await Milestone.createTable()
     console.log("Database tables initialized")
   } catch (error) {
     console.error("Database initialization error:", error)
@@ -61,6 +89,18 @@ const initDB = async () => {
 app.use("/api", authRoutes)
 app.use("/api/upload", uploadRoutes)
 app.use("/api/profile", profileRoutes)
+app.use("/api/properties", proptiesroutes)
+app.use("/api/aboutproperty", aboutpropertyroutes)
+app.use("/api/amenities", amenitiesroutes)
+app.use("/api/bankinfo", bankinforoutes)
+app.use("/api/brochure", brochureRoutes)
+app.use("/api/builderdetails", builderDetailsRoutes)
+app.use("/api/floorplan", floorplanroutes)
+app.use("/api/location", locationroutes)
+app.use("/api/milestone", Milestoneroutes)
+app.use("/api/paymentplan", paymentplanroutes)
+app.use("/api/ratings", ratingsroutes)
+
 
 // Health check route
 app.get("/health", (req, res) => {
@@ -82,6 +122,7 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
   try {
     await initDB()
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`)
     })
@@ -90,6 +131,7 @@ const startServer = async () => {
     process.exit(1)
   }
 }
+
 
 startServer()
 
