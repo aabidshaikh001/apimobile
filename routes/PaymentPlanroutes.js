@@ -4,7 +4,7 @@ import {
     getPaymentPlansByPropertyId, 
     deletePaymentPlanById, 
     deletePaymentPlansByPropertyId 
-} from "../controllers/paymentPlanController.js";
+} from "../controllers/paymentplancontroller.js";
 
 const router = express.Router();
 
