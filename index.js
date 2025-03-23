@@ -26,7 +26,7 @@ import bankinforoutes from "./routes/bankinforoutes.js"
 import brochureRoutes from "./routes/brochureroutes.js"
 import builderDetailsRoutes from "./routes/BuilderDeatailsroutes.js"
 import floorplanroutes from "./routes/FloorPlanroutes.js"
-import locationroutes from "./routes/locationroutes.js"
+import Locationroutes from "./routes/Locationroutes.js"
 import Milestoneroutes from "./routes/Milestoneroutes.js"
 import paymentplanroutes from "./routes/PaymentPlanroutes.js"
 import ratingsroutes from "./routes/Ratingroutes.js"
@@ -96,7 +96,7 @@ app.use("/api/bankinfo", bankinforoutes)
 app.use("/api/brochure", brochureRoutes)
 app.use("/api/builderdetails", builderDetailsRoutes)
 app.use("/api/floorplan", floorplanroutes)
-app.use("/api/location", locationroutes)
+app.use("/api/location", Locationroutes)
 app.use("/api/milestone", Milestoneroutes)
 app.use("/api/paymentplan", paymentplanroutes)
 app.use("/api/ratings", ratingsroutes)
