@@ -17,7 +17,7 @@ const BuilderDetails = {
                         overview NVARCHAR(MAX),
                         experience NVARCHAR(MAX),
                         certifications NVARCHAR(MAX),
-                        projects NVARCHAR(MAX),
+                        projects NVARCHAR(MAX), -- Storing JSON string
                         FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
                     );
                 END;
@@ -49,6 +49,7 @@ const BuilderDetails = {
                     INSERT (propertyId, name, established, logo, overview, experience, certifications, projects) 
                     VALUES (@propertyId, @name, @established, @logo, @overview, @experience, @certifications, @projects);
             `;
+
             await pool.request()
                 .input("propertyId", sql.VarChar(50), builderDetails.propertyId)
                 .input("name", sql.NVarChar(255), builderDetails.name)
@@ -57,8 +58,9 @@ const BuilderDetails = {
                 .input("overview", sql.NVarChar(sql.MAX), builderDetails.overview)
                 .input("experience", sql.NVarChar(sql.MAX), builderDetails.experience)
                 .input("certifications", sql.NVarChar(sql.MAX), builderDetails.certifications)
-                .input("projects", sql.NVarChar(sql.MAX), builderDetails.projects)
+                .input("projects", sql.NVarChar(sql.MAX), JSON.stringify(builderDetails.projects)) // Convert projects array to JSON string
                 .query(query);
+
             console.log("Builder details added or updated successfully.");
         } catch (error) {
             console.error("Error upserting builder details:", error);
@@ -72,7 +74,14 @@ const BuilderDetails = {
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
-            return result.recordset[0] || null;
+
+            if (result.recordset.length > 0) {
+                const builderDetails = result.recordset[0];
+                builderDetails.projects = JSON.parse(builderDetails.projects || "[]"); // Convert JSON string to object
+                return builderDetails;
+            }
+
+            return null;
         } catch (error) {
             console.error("Error fetching builder details:", error);
             return null;

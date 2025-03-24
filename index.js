@@ -6,6 +6,7 @@ import User from "./models/User.js"
 import OTP from "./models/OTP.js"
 import authRoutes from "./routes/authRoutes.js"
 import uploadRoutes from "./routes/uploadRoutes.js"
+import cors from "cors"
 // Add the profile routes
 import profileRoutes from "./routes/profileRoutes.js"
 import proptiesroutes from "./routes/propertyroutes.js"
@@ -49,6 +50,7 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(express.json({ limit: "10mb" })) // Increase JSON payload limit
 app.use(morgan("dev"))
+app.use(cors());
 
 // Add request logging
 app.use((req, res, next) => {
