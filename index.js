@@ -21,6 +21,7 @@ import Location from "./models/Location.js"
 import PaymentPlan from "./models/PaymentPlan.js"
 import Ratings from "./models/Rating.js"
 import Booking from "./models/bookingmodal.js"
+import Quries from "./models/Quries.js"
 // routes
 import aboutpropertyroutes from "./routes/aboutpropertyroutes.js"
 import amenitiesroutes from "./routes/amenitiesroutes.js"
@@ -33,6 +34,7 @@ import Milestoneroutes from "./routes/Milestoneroutes.js"
 import paymentplanroutes from "./routes/PaymentPlanroutes.js"
 import ratingsroutes from "./routes/Ratingroutes.js"
 import bookingRoutes from "./routes/booking.routes.js";
+import queryroutes from "./routes/queryroutes.js"
 
 
 
@@ -83,6 +85,7 @@ const initDB = async () => {
     await Ratings.createTable()
     await Milestone.createTable()
     await Booking.createTable()
+    await Quries.createTable()
     console.log("Database tables initialized")
   } catch (error) {
     console.error("Database initialization error:", error)
@@ -106,6 +109,7 @@ app.use("/api/milestone", Milestoneroutes)
 app.use("/api/paymentplan", paymentplanroutes)
 app.use("/api/ratings", ratingsroutes)
 app.use("/api/booking", bookingRoutes)
+app.use("/api/query", queryroutes)
 
 
 // Health check route
