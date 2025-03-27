@@ -4,7 +4,7 @@ import {
     getBooking,
     getPropertyBookings,
     updateBookingStatus,
-    deleteBooking
+    deleteBooking, getAllBookings
 } from "../controllers/booking.controller.js";
 import { body, param } from "express-validator";
 
@@ -52,5 +52,8 @@ router.delete("/:bookingId",
     param('bookingId').matches(/^BK-\d+$/).withMessage('Invalid booking ID format'),
     deleteBooking
 );
+
+// Get all bookings for a property
+router.get("/all", getAllBookings);
 
 export default router;

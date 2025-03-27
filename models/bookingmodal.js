@@ -11,8 +11,8 @@ const Bookings = {
                     CREATE TABLE MBBookings (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         bookingId AS 'BK-' + CAST(id AS VARCHAR(10)) PERSISTED,
-                        propertyId VARCHAR(50) NOT NULL,
-                        propertyName NVARCHAR(255) NOT NULL,
+                        propertyId VARCHAR(50) NULL,
+                        propertyName NVARCHAR(255) NULL,
                         clientName NVARCHAR(100) NOT NULL,
                         phoneNumber VARCHAR(50) NOT NULL,
                         email VARCHAR(100) NOT NULL,
@@ -23,11 +23,8 @@ const Bookings = {
                         country NVARCHAR(100),
                         bookingStatus VARCHAR(20) DEFAULT 'Pending',
                         createdAt DATETIME DEFAULT GETDATE(),
-                        updatedAt DATETIME DEFAULT GETDATE(),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id)
+                        updatedAt DATETIME DEFAULT GETDATE()
                     );
-
-                    CREATE INDEX idx_bookings_property ON MBBookings(propertyId);
                     CREATE INDEX idx_bookings_email ON MBBookings(email);
                     CREATE INDEX idx_bookings_date ON MBBookings(bookingDate);
                 END;
@@ -55,14 +52,14 @@ const Bookings = {
             `;
 
             const result = await pool.request()
-                .input("propertyId", sql.VarChar(50), bookingData.propertyId)
-                .input("propertyName", sql.NVarChar(255), bookingData.propertyName)
+                .input("propertyId", sql.VarChar(50), bookingData.propertyId || null)
+                .input("propertyName", sql.NVarChar(255), bookingData.propertyName || null)
                 .input("clientName", sql.NVarChar(100), bookingData.clientName)
                 .input("phoneNumber", sql.VarChar(50), bookingData.phoneNumber)
                 .input("email", sql.VarChar(100), bookingData.email)
                 .input("requirement", sql.NVarChar(500), bookingData.requirement)
                 .input("priceRange", sql.NVarChar(100), bookingData.priceRange)
-                .input("bookingDate", sql.Date, bookingData.date)
+                .input("bookingDate", sql.Date, bookingData.bookingDate)
                 .input("timeSlot", sql.VarChar(50), bookingData.timeSlot)
                 .input("country", sql.NVarChar(100), bookingData.country || null)
                 .query(query);
@@ -80,10 +77,7 @@ const Bookings = {
     getBookingById: async (bookingId) => {
         try {
             const pool = await connectToDB();
-            const query = `
-                SELECT * FROM MBBookings 
-                WHERE bookingId = @bookingId
-            `;
+            const query = `SELECT * FROM MBBookings WHERE bookingId = @bookingId`;
             const result = await pool.request()
                 .input("bookingId", sql.VarChar(50), bookingId)
                 .query(query);
@@ -98,18 +92,19 @@ const Bookings = {
     getBookingsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = `
-                SELECT * FROM MBBookings 
-                WHERE propertyId = @propertyId
-                ORDER BY bookingDate DESC
-            `;
-            const result = await pool.request()
-                .input("propertyId", sql.VarChar(50), propertyId)
-                .query(query);
+            const query = propertyId
+                ? `SELECT * FROM MBBookings WHERE propertyId = @propertyId ORDER BY bookingDate DESC`
+                : `SELECT * FROM MBBookings ORDER BY bookingDate DESC`;
             
+            const request = pool.request();
+            if (propertyId) {
+                request.input("propertyId", sql.VarChar(50), propertyId);
+            }
+            
+            const result = await request.query(query);
             return result.recordset;
         } catch (error) {
-            console.error("Error fetching bookings by property:", error);
+            console.error("Error fetching bookings:", error);
             return [];
         }
     },
@@ -139,10 +134,7 @@ const Bookings = {
     deleteBooking: async (bookingId) => {
         try {
             const pool = await connectToDB();
-            const query = `
-                DELETE FROM MBBookings
-                WHERE bookingId = @bookingId
-            `;
+            const query = `DELETE FROM MBBookings WHERE bookingId = @bookingId`;
             await pool.request()
                 .input("bookingId", sql.VarChar(50), bookingId)
                 .query(query);
@@ -153,7 +145,25 @@ const Bookings = {
             console.error("Error deleting booking:", error);
             return false;
         }
+    },
+    getAllbookings: async () => {
+        console.log("📌 getAllbookings function called!");
+    
+        try {
+            console.log("🔍 Querying database for all bookings...");
+    
+            const query = `SELECT * FROM MBBookings`;
+            const result = await pool.request().query(query);
+    
+            console.log("📌 Query result:", result.recordset);
+    
+            return result.recordset;
+        } catch (error) {
+            console.error("❌ Error executing getAllbookings:", error);
+            throw error;  // Ensure the error propagates to the controller
+        }
     }
+    
 };
 
 export default Bookings;
