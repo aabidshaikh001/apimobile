@@ -1,38 +1,37 @@
-import jwt from "jsonwebtoken"
-import dotenv from "dotenv"
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 
-dotenv.config()
+dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d"
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 class TokenService {
   // Generate JWT token
   generateToken(payload) {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN })
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
   }
 
   // Verify JWT token
   verifyToken(token) {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET)
-      return { success: true, data: decoded }
+      const decoded = jwt.verify(token, JWT_SECRET);
+      return { success: true, data: decoded };
     } catch (error) {
-      return { success: false, message: error.message }
+      return { success: false, message: error.message };
     }
   }
 
-  // Extract token from Authorization header
+  // Extract token = require(Authorization header
   extractToken(req) {
-    const authHeader = req.headers.authorization
+    const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return null
+      return null;
     }
 
-    return authHeader.split(" ")[1]
+    return authHeader.split(" ")[1];
   }
 }
 
-export default new TokenService()
-
+module.exports = new TokenService(); // CommonJS export

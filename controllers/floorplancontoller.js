@@ -1,35 +1,44 @@
-import FloorPlan from "../models/FloorPlan.js";
+const FloorPlan = require("../models/FloorPlan");
 
-export const upsertFloorPlan = async (req, res) => {
-    try {
-        const { propertyId, bhk, area, price, pricePerSqft } = req.body;
-        await FloorPlan.upsertFloorPlan({ propertyId, bhk, area, price, pricePerSqft });
-        res.status(200).json({ message: "Floor plan added or updated successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Error upserting floor plan", details: error.message });
-    }
+exports.addFloorPlanByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    const { name, image, area, bedrooms, bathrooms } = req.body;
+
+    await FloorPlan.addFloorPlan({
+      propertyId,
+      name,
+      image,
+      area,
+      bedrooms,
+      bathrooms
+    });
+
+    res.status(201).json({ message: "Floor plan added successfully." });
+  } catch (error) {
+    console.error("Controller error (addFloorPlanByPropertyId):", error);
+    res.status(500).json({ error: "Failed to add floor plan." });
+  }
 };
 
-export const getFloorPlanByPropertyId = async (req, res) => {
-    try {
-        const { propertyId } = req.params;
-        const floorPlan = await FloorPlan.getFloorPlanByPropertyId(propertyId);
-        if (floorPlan) {
-            res.status(200).json(floorPlan);
-        } else {
-            res.status(404).json({ error: "Floor plan not found" });
-        }
-    } catch (error) {
-        res.status(500).json({ error: "Error fetching floor plan", details: error.message });
-    }
+exports.getFloorPlansByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    const floorPlans = await FloorPlan.getFloorPlansByPropertyId(propertyId);
+    res.status(200).json(floorPlans);
+  } catch (error) {
+    console.error("Controller error (getFloorPlansByPropertyId):", error);
+    res.status(500).json({ error: "Failed to fetch floor plans." });
+  }
 };
 
-export const deleteFloorPlanByPropertyId = async (req, res) => {
-    try {
-        const { propertyId } = req.params;
-        await FloorPlan.deleteFloorPlanByPropertyId(propertyId);
-        res.status(200).json({ message: "Floor plan deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ error: "Error deleting floor plan", details: error.message });
-    }
+exports.deleteFloorPlansByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    await FloorPlan.deleteFloorPlansByPropertyId(propertyId);
+    res.status(200).json({ message: "Floor plans deleted successfully." });
+  } catch (error) {
+    console.error("Controller error (deleteFloorPlansByPropertyId):", error);
+    res.status(500).json({ error: "Failed to delete floor plans." });
+  }
 };

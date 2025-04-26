@@ -1,5 +1,6 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 
 const generatePropertyId = async () => {
     try {
@@ -53,7 +54,8 @@ const Properties = {
                         superBuiltUpArea NVARCHAR(50),
                         carpetArea NVARCHAR(50),
                         isSaved BIT,
-                        isFeatured BIT
+                        isFeatured BIT,
+                        type NVARCHAR(100) 
                     );
                 END;
             `;
@@ -72,8 +74,8 @@ const Properties = {
             if (!newId) throw new Error("Failed to generate property ID");
 
             const query = `
-                INSERT INTO MBProperties (id, title, location, price, pricePerSqft, latitude, longitude, propertyType, status, propertyFor, images, brokerage, tag, readyToMove, discount, visitBonus, bhkOptions, isSaved, isFeatured, superBuiltUpArea, carpetArea)
-                VALUES (@id, @title, @location, @price, @pricePerSqft, @latitude, @longitude, @propertyType, @status, @propertyFor, @images, @brokerage, @tag, @readyToMove, @discount, @visitBonus, @bhkOptions, @isSaved, @isFeatured, @superBuiltUpArea, @carpetArea)
+                INSERT INTO MBProperties (id, title, location, price, pricePerSqft, latitude, longitude, propertyType, status, propertyFor, images, brokerage, tag, readyToMove, discount, visitBonus, bhkOptions, isSaved, isFeatured, superBuiltUpArea, carpetArea, type)
+                VALUES (@id, @title, @location, @price, @pricePerSqft, @latitude, @longitude, @propertyType, @status, @propertyFor, @images, @brokerage, @tag, @readyToMove, @discount, @visitBonus, @bhkOptions, @isSaved, @isFeatured, @superBuiltUpArea, @carpetArea, @type)
             `;
             await pool.request()
                 .input("id", sql.VarChar(50), newId)
@@ -97,6 +99,7 @@ const Properties = {
                 .input("isFeatured", sql.Bit, property.isFeatured)
                 .input("superBuiltUpArea", sql.NVarChar(50), property.superBuiltUpArea)
                 .input("carpetArea", sql.NVarChar(50), property.carpetArea)
+                .input("type", sql.NVarChar(100), property.type)
                 .query(query);
             console.log("Property inserted successfully with ID:", newId);
         } catch (error) {
@@ -130,6 +133,7 @@ const Properties = {
                     isFeatured = @isFeatured
                     superBuiltUpArea = @superBuiltUpArea,
                     carpetArea = @carpetArea
+                    type = @type
                 WHERE id = @id
             `;
             await pool.request()
@@ -154,6 +158,7 @@ const Properties = {
                 .input("isFeatured", sql.Bit, property.isFeatured)
                 .input("superBuiltUpArea", sql.NVarChar(50), property.superBuiltUpArea)
                 .input("carpetArea", sql.NVarChar(50), property.carpetArea)
+                .input("type", sql.NVarChar(100), property.type)
                 .query(query);
             console.log("Property updated successfully.");
         } catch (error) {
@@ -228,4 +233,4 @@ const Properties = {
     },
 };
 
-export default Properties;
+module.exports = Properties;

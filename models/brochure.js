@@ -1,5 +1,6 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 
 const Brochures = {
     createTable: async () => {
@@ -78,4 +79,4 @@ const Brochures = {
     }
 };
 
-export default Brochures;
+module.exports = Brochures;

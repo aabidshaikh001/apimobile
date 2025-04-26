@@ -1,8 +1,9 @@
-import express from "express"
-import * as authController from "../controllers/authController.js"
-import { authenticate } from "../middlewares/authMiddleware.js"
+const express = require("express");
+const authController = require("../controllers/authController");
+const { authenticate } = require("../middlewares/authMiddleware");
 
-const router = express.Router()
+const router = express.Router();
+
 
 // Public routes
 router.post("/sendotp", authController.sendOTP)
@@ -23,5 +24,6 @@ router.get("/test", (req, res) => {
 // Add a more detailed profile route
 router.get("/user/profile", authenticate, authController.getCurrentUser)
 
-export default router
+module.exports = router;  // CommonJS export
+
 

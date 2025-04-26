@@ -1,62 +1,62 @@
-import User from "../models/User.js"
-import OTP from "../models/OTP.js"
-import emailService from "../utils/emailService.js"
-import tokenService from "../utils/tokenService.js"
+const User = require("../models/User");
+const OTP = require("../models/OTP");
+const emailService = require("../utils/emailService");
+const tokenService = require("../utils/tokenService");
 
 // Send OTP for login
-export const sendOTP = async (req, res) => {
+exports.sendOTP = async (req, res) => {
   try {
-    const { email } = req.body
+    const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: "Email is required" })
+      return res.status(400).json({ message: "Email is required" });
     }
 
     // Check if user exists
-    const user = await User.findByEmail(email)
+    const user = await User.findByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found. Please register first." })
+      return res.status(404).json({ message: "User not found. Please register first." });
     }
 
     // Generate OTP
-    const { otp } = await OTP.generateOTP(email, "login")
+    const { otp } = await OTP.generateOTP(email, "login");
 
     // Send OTP via email
-    await emailService.sendOTP(email, otp, "login")
+    await emailService.sendOTP(email, otp, "login");
 
-    res.status(200).json({ message: "OTP sent to your email" })
+    res.status(200).json({ message: "OTP sent to your email" });
   } catch (error) {
-    console.error("Send OTP error:", error)
-    res.status(500).json({ message: "Server error" })
+    console.error("Send OTP error:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 // Verify OTP for login
-export const verifyOTP = async (req, res) => {
+exports.verifyOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body
+    const { email, otp } = req.body;
 
     if (!email || !otp) {
-      return res.status(400).json({ message: "Email and OTP are required" })
+      return res.status(400).json({ message: "Email and OTP are required" });
     }
 
     // Verify OTP
-    const verification = await OTP.verifyOTP(email, otp, "login")
+    const verification = await OTP.verifyOTP(email, otp, "login");
 
     if (!verification.success) {
-      return res.status(400).json({ message: verification.message })
+      return res.status(400).json({ message: verification.message });
     }
 
     // Get user
-    const user = await User.findByEmail(email)
+    const user = await User.findByEmail(email);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" })
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Generate JWT token
-    const token = tokenService.generateToken({ userId: user.id, email: user.email })
+    const token = tokenService.generateToken({ userId: user.id, email: user.email });
 
     res.status(200).json({
       message: "Login successful",
@@ -76,146 +76,148 @@ export const verifyOTP = async (req, res) => {
         ifscCode: user.ifscCode,
         recipientName: user.recipientName,
       },
-    })
+    });
   } catch (error) {
-    console.error("Verify OTP error:", error)
-    res.status(500).json({ message: "Server error" })
+    console.error("Verify OTP error:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 // Register new user
-export const register = async (req, res) => {
+// Register new user
+exports.register = async (req, res) => {
   try {
-    const { email } = req.body
+    const { email } = req.body;
+    console.log("Registration request for:", email);
 
     if (!email) {
-      return res.status(400).json({ message: "Email is required" })
+      return errorResponse(res, 400, "Email is required");
     }
 
-    // Check if user already exists
-    const existingUser = await User.findByEmail(email)
+    // Validate email format
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return errorResponse(res, 400, "Invalid email format");
+    }
 
+    const existingUser = await User.findByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ message: "User with this email already exists" })
+      return errorResponse(res, 400, "User with this email already exists");
     }
 
-    // Generate OTP for registration
-    const { otp } = await OTP.generateOTP(email, "registration")
+    const { otp, error: genError } = await OTP.generateOTP(email, "registration");
+    if (genError) {
+      return errorResponse(res, 500, "Failed to generate OTP", genError);
+    }
 
-    // Send OTP via email
-    await emailService.sendOTP(email, otp, "registration")
+    const emailResult = await emailService.sendOTP(email, otp, "registration");
+    if (!emailResult.success) {
+      return errorResponse(res, 500, "Failed to send registration OTP", emailResult.error);
+    }
 
-    res.status(200).json({ message: "OTP sent to your email for registration" })
+    res.status(200).json({ 
+      success: true,
+      message: "OTP sent to your email for registration" 
+    });
   } catch (error) {
-    console.error("Registration error:", error)
-    res.status(500).json({ message: "Server error" })
+    errorResponse(res, 500, "Server error during registration", error);
   }
-}
-
+};
 // Verify OTP for registration
-export const verifyRegistrationOTP = async (req, res) => {
+exports.verifyRegistrationOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body
+    const { email, otp } = req.body;
+    console.log("Registration OTP verification for:", email);
 
     if (!email || !otp) {
-      return res.status(400).json({ message: "Email and OTP are required" })
+      return errorResponse(res, 400, "Email and OTP are required");
     }
 
-    // Verify OTP
-    const verification = await OTP.verifyOTP(email, otp, "registration")
-
+    const verification = await OTP.verifyOTP(email, otp, "registration");
     if (!verification.success) {
-      return res.status(400).json({ message: verification.message })
+      return errorResponse(res, 400, verification.message);
     }
 
-    // Create new user
-    const result = await User.createUser({ email })
-
+    const result = await User.createUser({ email });
     if (!result.success) {
-      return res.status(400).json({ message: result.message })
+      return errorResponse(res, 400, result.message);
     }
 
     res.status(201).json({
+      success: true,
       message: "Registration successful. You can now login.",
       userId: result.userId,
-    })
+    });
   } catch (error) {
-    console.error("Verify registration OTP error:", error)
-    res.status(500).json({ message: "Server error" })
+    errorResponse(res, 500, "Server error during registration verification", error);
   }
-}
-
-// Improve the getCurrentUser controller
-export const getCurrentUser = async (req, res) => {
+};
+// Get current user
+exports.getCurrentUser = async (req, res) => {
   try {
-    // User is attached to request by auth middleware
     if (!req.user) {
-      return res.status(404).json({ message: "User not found" })
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Get fresh user data from database
-    const user = await User.findById(req.user.id)
+    // Get fresh user data = require(database
+    const user = await User.findById(req.user.id);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" })
+      return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user)
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Get user error:", error)
-    res.status(500).json({ message: "Server error", error: error.message })
+    console.error("Get user error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
-}
+};
 
-// Enhance the updateProfile controller with better error handling
-export const updateProfile = async (req, res) => {
+// Update user profile
+exports.updateProfile = async (req, res) => {
   try {
-    const userId = req.user.id
-    const userData = req.body
+    const userId = req.user.id;
+    const userData = req.body;
 
-    console.log("Updating profile for user:", userId)
-    console.log("Update data:", userData)
+    console.log("Updating profile for user:", userId);
+    console.log("Update data:", userData);
 
     // Validate required fields if necessary
     if (userData.email) {
-      const existingUser = await User.findByEmail(userData.email)
+      const existingUser = await User.findByEmail(userData.email);
       if (existingUser && existingUser.id !== userId) {
-        return res.status(400).json({ message: "Email already in use by another account" })
+        return res.status(400).json({ message: "Email already in use by another account" });
       }
     }
 
     // Update user profile
-    const result = await User.updateProfile(userId, userData)
+    const result = await User.updateProfile(userId, userData);
 
     if (!result.success) {
-      return res.status(400).json({ message: result.message })
+      return res.status(400).json({ message: result.message });
     }
 
     // Get updated user
-    const updatedUser = await User.findById(userId)
+    const updatedUser = await User.findById(userId);
 
     if (!updatedUser) {
-      return res.status(404).json({ message: "User not found after update" })
+      return res.status(404).json({ message: "User not found after update" });
     }
 
     // Return the updated user data
     return res.status(200).json({
       message: "Profile updated successfully",
       user: updatedUser,
-    })
+    });
   } catch (error) {
-    console.error("Update profile error:", error)
+    console.error("Update profile error:", error);
     return res.status(500).json({
       message: "Server error",
       error: error.message,
-    })
+    });
   }
-}
+};
 
-// Logout (optional - for server-side session management)
-export const logout = async (req, res) => {
-  // Since we're using JWT, there's no server-side session to invalidate
-  // This endpoint is just for completeness
-  res.status(200).json({ message: "Logged out successfully" })
-}
-
+// Logout (for completeness)
+exports.logout = (req, res) => {
+  res.status(200).json({ message: "Logged out successfully" });
+};

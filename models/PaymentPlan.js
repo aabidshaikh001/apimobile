@@ -1,5 +1,6 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 
 const PaymentPlan = {
     createTable: async () => {
@@ -83,4 +84,4 @@ const PaymentPlan = {
     }
 };
 
-export default PaymentPlan;
+module.exports = PaymentPlan;

@@ -1,16 +1,17 @@
-import express from "express";
-import { 
-    insertRating, 
-    getRatingsByPropertyId, 
-    deleteRatingById, 
-    deleteRatingsByPropertyId 
-} from "../controllers/ratingscontroller.js";
-
+const express = require("express");
 const router = express.Router();
+const ratingController = require("../controllers/ratingscontroller");
 
-router.post("/", insertRating);
-router.get("/:propertyId", getRatingsByPropertyId);
-router.delete("/single/:id", deleteRatingById);
-router.delete("/property/:propertyId", deleteRatingsByPropertyId);
+// POST - Add new rating
+router.post("/", ratingController.insertRating);
 
-export default router;
+// GET - Get all ratings by propertyId
+router.get("/:propertyId", ratingController.getRatingsByPropertyId);
+
+// DELETE - Delete a rating by ID
+router.delete("/:id", ratingController.deleteRatingById);
+
+// DELETE - Delete all ratings for a property
+router.delete("/:propertyId", ratingController.deleteRatingsByPropertyId);
+
+module.exports = router;

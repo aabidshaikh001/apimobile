@@ -1,14 +1,14 @@
-import express from "express";
-import { 
-    insertLocation, 
-    getLocationsByPropertyId, 
-    deleteLocationsByPropertyId 
-} from "../controllers/locationcontroller.js";
-
+const express = require("express");
 const router = express.Router();
+const controller = require("../controllers/locationcontroller");
 
-router.post("/", insertLocation);
-router.get("/:propertyId", getLocationsByPropertyId);
-router.delete("/:propertyId", deleteLocationsByPropertyId);
+// Add a location by property ID
+router.post("/:id", controller.addLocationByPropertyId);
 
-export default router;
+// Get all locations for a property
+router.get("/:id", controller.getLocationsByPropertyId);
+
+// Delete all locations for a property
+router.delete("/:id", controller.deleteLocationsByPropertyId);
+
+module.exports = router;

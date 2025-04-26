@@ -1,14 +1,14 @@
-import express from "express";
-import { 
-    createBankInfo, 
-    getBankInfoByPropertyId, 
-    deleteBankInfoByPropertyId 
-} from "../controllers/bankinfocontroller.js";
-
+const express = require("express");
 const router = express.Router();
+const bankInfoController = require("../controllers/bankinfocontroller");
 
-router.post("/", createBankInfo);
-router.get("/:propertyId", getBankInfoByPropertyId);
-router.delete("/:propertyId", deleteBankInfoByPropertyId);
+// Route to insert bank info
+router.post("/", bankInfoController.insertBankInfo);
 
-export default router;
+// Route to get bank info by propertyId
+router.get("/:propertyId", bankInfoController.getBankInfo);
+
+// Route to delete bank info by propertyId
+router.delete("/:propertyId", bankInfoController.deleteBankInfo);
+
+module.exports = router;

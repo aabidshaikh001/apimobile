@@ -1,10 +1,10 @@
-import express from "express";
-import { 
+const express = require("express");
+const { 
     insertPaymentPlan, 
     getPaymentPlansByPropertyId, 
     deletePaymentPlanById, 
     deletePaymentPlansByPropertyId 
-} from "../controllers/paymentplancontroller.js";
+} = require("../controllers/paymentplancontroller");
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.get("/:propertyId", getPaymentPlansByPropertyId);
 router.delete("/single/:id", deletePaymentPlanById);
 router.delete("/property/:propertyId", deletePaymentPlansByPropertyId);
 
-export default router;
+module.exports = router; // CommonJS export

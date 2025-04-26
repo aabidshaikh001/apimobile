@@ -1,10 +1,9 @@
-import tokenService from "../utils/tokenService.js"
-import User from "../models/User.js"
-
+const tokenService = require("../utils/tokenService")
+const User = require("../models/User")
 // Middleware to authenticate requests
-export const authenticate = async (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
-    // Extract token from request
+    // Extract token = require(request
     const token = tokenService.extractToken(req)
 
     if (!token) {
@@ -18,7 +17,7 @@ export const authenticate = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid or expired token" })
     }
 
-    // Get user from database
+    // Get user = require(database
     const user = await User.findById(data.userId)
 
     if (!user) {
@@ -36,8 +35,12 @@ export const authenticate = async (req, res, next) => {
 }
 
 // Middleware to handle file uploads
-export const handleFileUpload = (req, res, next) => {
+const handleFileUpload = (req, res, next) => {
   // This middleware will be implemented when we set up multer for file uploads
   next()
 }
 
+module.exports = {
+  authenticate,
+  handleFileUpload,
+}

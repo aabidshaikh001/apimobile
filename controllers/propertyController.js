@@ -1,5 +1,5 @@
-import Properties from "../models/Properties.js";
-export const getPropertyById = async (req, res) => {
+const Properties = require("../models/Properties.js");
+exports.getPropertyById = async (req, res) => {
     try {
         const { id } = req.params;
         const property = await Properties.getPropertyById(id);
@@ -15,7 +15,7 @@ export const getPropertyById = async (req, res) => {
     }
     }
 
-export const getAllProperties = async (req, res) => {
+exports.getAllProperties = async (req, res) => {
     try {
         const properties = await Properties.getAllProperties();
         res.status(200).json(properties);
@@ -24,7 +24,7 @@ export const getAllProperties = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 }
-export const insertProperty = async (req, res) => {
+exports.insertProperty = async (req, res) => {
     try {
         const property = req.body;
         await Properties.insertProperty(property);
@@ -34,7 +34,7 @@ export const insertProperty = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 }
-export const updateProperty = async (req, res) => {
+exports.updateProperty = async (req, res) => {
     try {
         const { id } = req.params;
         const property = req.body;
@@ -45,7 +45,7 @@ export const updateProperty = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 }
-export const deleteProperty = async (req, res) => {
+exports.deleteProperty = async (req, res) => {
     try {
         const { id } = req.params;
         await Properties.deleteProperty(id);
@@ -55,7 +55,7 @@ export const deleteProperty = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 }
-export const getFeaturedProperties = async (req, res) => {
+exports.getFeaturedProperties = async (req, res) => {
     try {
         const properties = await Properties.getFeaturedProperties();
         res.status(200).json(properties);
@@ -64,7 +64,7 @@ export const getFeaturedProperties = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 }
-export const getSavedProperties = async (req, res) => {
+exports.getSavedProperties = async (req, res) => {
     try {
         const { userId } = req.params; // Assuming userId is passed in the request parameters
         const properties = await Properties.getSavedProperties(userId);

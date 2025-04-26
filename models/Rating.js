@@ -1,12 +1,12 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
 
 const Rating = {
     createTable: async () => {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBRating')
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBRating')
                 BEGIN
                     CREATE TABLE MBRating (
                         id INT IDENTITY(1,1) PRIMARY KEY,
@@ -40,9 +40,8 @@ const Rating = {
                 .input("rating", sql.Int, ratingData.rating)
                 .input("review", sql.NVarChar(sql.MAX), ratingData.review)
                 .query(query);
-            console.log("Rating inserted successfully.");
         } catch (error) {
-            console.error("Error inserting rating:", error);
+            throw error;
         }
     },
 
@@ -55,8 +54,7 @@ const Rating = {
                 .query(query);
             return result.recordset;
         } catch (error) {
-            console.error("Error fetching ratings:", error);
-            return [];
+            throw error;
         }
     },
 
@@ -67,9 +65,8 @@ const Rating = {
             await pool.request()
                 .input("id", sql.Int, id)
                 .query(query);
-            console.log("Rating deleted successfully.");
         } catch (error) {
-            console.error("Error deleting rating:", error);
+            throw error;
         }
     },
 
@@ -80,11 +77,10 @@ const Rating = {
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
-            console.log("All ratings for property deleted successfully.");
         } catch (error) {
-            console.error("Error deleting ratings:", error);
+            throw error;
         }
     }
 };
 
-export default Rating;
+module.exports = Rating;

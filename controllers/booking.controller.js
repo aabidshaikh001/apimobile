@@ -1,14 +1,13 @@
-import Bookings from "../models/bookingmodal.js";
-import { validationResult } from "express-validator";
-import twilio from 'twilio';
-
+const Bookings = require("../models/bookingmodal");
+const { validationResult } = require("express-validator");
+const twilio = require("twilio");
 
 // Initialize Twilio client
 const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
   ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
   : null;
 
-export const createBooking = async (req, res) => {
+exports.createBooking = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -150,7 +149,7 @@ async function sendWhatsAppConfirmation({ to, clientName, propertyName, date, ti
     });
   
     try {
-      // ✅ Ensure From number is in WhatsApp format
+      // ✅ Ensure = require(number is in WhatsApp format
       const fromWhatsApp = `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER || '+14155238886'}`;
       const toWhatsApp = `whatsapp:${to.replace(/whatsapp:/, '')}`; // Remove extra prefix if present
   
@@ -168,7 +167,7 @@ async function sendWhatsAppConfirmation({ to, clientName, propertyName, date, ti
       console.error('Twilio Error Details:', error.code, error.moreInfo);
     }
   }
-      export const getBooking = async (req, res) => {
+      exports.getBooking = async (req, res) => {
     try {
         const booking = await Bookings.getBookingById(req.params.bookingId);
         
@@ -193,7 +192,7 @@ async function sendWhatsAppConfirmation({ to, clientName, propertyName, date, ti
     }
 };
 
-export const getPropertyBookings = async (req, res) => {
+exports.getPropertyBookings = async (req, res) => {
     try {
         const bookings = await Bookings.getBookingsByPropertyId(req.params.propertyId);
         
@@ -212,7 +211,7 @@ export const getPropertyBookings = async (req, res) => {
     }
 };
 
-export const updateBookingStatus = async (req, res) => {
+exports.updateBookingStatus = async (req, res) => {
     try {
         const { status } = req.body;
         
@@ -246,7 +245,7 @@ export const updateBookingStatus = async (req, res) => {
     }
 };
 
-export const deleteBooking = async (req, res) => {
+exports.deleteBooking = async (req, res) => {
     try {
         const success = await Bookings.deleteBooking(req.params.bookingId);
         
@@ -271,7 +270,7 @@ export const deleteBooking = async (req, res) => {
     }
 };
 
-export const getAllBookings = async (req, res) => {
+exports.getAllBookings = async (req, res) => {
     try {
         console.log("📌 getAllBookings function called!");
 

@@ -1,5 +1,6 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 
 const Milestone = {
     createTable: async () => {
@@ -85,4 +86,4 @@ const Milestone = {
     }
 };
 
-export default Milestone;
+module.exports = Milestone;

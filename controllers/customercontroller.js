@@ -1,6 +1,6 @@
-import customermodel from "../models/customermodel.js";
+const customermodel = require("../models/customermodel");
 
-export const createCustomer = async (req, res) => {
+exports.createCustomer = async (req, res) => {
     try {
         await customermodel.createcustomer(req.body);
         res.status(201).json({ message: "Customer created successfully" });
@@ -9,7 +9,7 @@ export const createCustomer = async (req, res) => {
     }
 };
 
-export const getAllCustomers = async (req, res) => {
+exports.getAllCustomers = async (req, res) => {
     try {
         const customers = await customermodel.getAllCustomers();
         res.status(200).json(customers);
@@ -18,7 +18,7 @@ export const getAllCustomers = async (req, res) => {
     }
 };
 
-export const getCustomerById = async (req, res) => {
+exports.getCustomerById = async (req, res) => {
     try {
         const customer = await customermodel.getCustomerById(req.params.id);
         if (!customer) {
@@ -30,7 +30,7 @@ export const getCustomerById = async (req, res) => {
     }
 };
 
-export const updateCustomer = async (req, res) => {
+exports.updateCustomer = async (req, res) => {
     try {
         await customermodel.updateCustomer(req.params.id, req.body);
         res.status(200).json({ message: "Customer updated successfully" });
@@ -39,7 +39,7 @@ export const updateCustomer = async (req, res) => {
     }
 };
 
-export const deleteCustomer = async (req, res) => {
+exports.deleteCustomer = async (req, res) => {
     try {
         await customermodel.deleteCustomer(req.params.id);
         res.status(200).json({ message: "Customer deleted successfully" });

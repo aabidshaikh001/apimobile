@@ -1,14 +1,14 @@
-import express from "express";
-import {
-    createAmenity,
-    getAmenitiesByPropertyId,
-    deleteAmenitiesByPropertyId
-} from "../controllers/amenitiescontrollers.js";
-
+const express = require("express");
 const router = express.Router();
+const amenitiesController = require("../controllers/amenitiescontrollers");
 
-router.post("/", createAmenity);  // Create Amenity
-router.get("/:propertyId", getAmenitiesByPropertyId);  // Get by Property ID
-router.delete("/:propertyId", deleteAmenitiesByPropertyId);  // Delete by Property ID
+// POST - Add multiple amenities
+router.post("/:propertyId", amenitiesController.create);
 
-export default router;
+// GET - Get amenities by property ID
+router.get("/:propertyId", amenitiesController.getByPropertyId);
+
+// DELETE - Delete amenities by property ID
+router.delete("/:propertyId", amenitiesController.deleteByPropertyId);
+
+module.exports = router;

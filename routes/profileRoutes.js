@@ -1,6 +1,7 @@
-import express from "express"
-import * as profileController from "../controllers/profileController.js"
-import { authenticate } from "../middlewares/authMiddleware.js"
+const express = require("express");
+const profileController = require("../controllers/profileController");
+const { authenticate } = require("../middlewares/authMiddleware");
+
 
 const router = express.Router()
 
@@ -12,6 +13,4 @@ router.put("/", authenticate, profileController.updateProfile)
 
 // Get profile by ID (admin only)
 router.get("/:id", authenticate, profileController.getProfileById)
-
-export default router
-
+module.exports = router; // CommonJS export

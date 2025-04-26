@@ -1,14 +1,14 @@
-import express from "express";
-import { 
-    upsertFloorPlan, 
-    getFloorPlanByPropertyId, 
-    deleteFloorPlanByPropertyId 
-} from "../controllers/floorplancontoller.js";
-
+const express = require("express");
 const router = express.Router();
+const floorPlanController = require("../controllers/floorplancontoller");
 
-router.post("/", upsertFloorPlan);
-router.get("/:propertyId", getFloorPlanByPropertyId);
-router.delete("/:propertyId", deleteFloorPlanByPropertyId);
+// POST /api/floorplans/:id → Add floor plan by propertyId
+router.post("/:id", floorPlanController.addFloorPlanByPropertyId);
 
-export default router;
+// GET /api/floorplans/:id → Get all floor plans for propertyId
+router.get("/:id", floorPlanController.getFloorPlansByPropertyId);
+
+// DELETE /api/floorplans/:id → Delete all floor plans for propertyId
+router.delete("/:id", floorPlanController.deleteFloorPlansByPropertyId);
+
+module.exports = router;

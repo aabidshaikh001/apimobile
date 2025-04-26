@@ -1,12 +1,14 @@
-import express from "express";
-import {
+const express = require("express");
+const {
     createBooking,
     getBooking,
     getPropertyBookings,
     updateBookingStatus,
-    deleteBooking, getAllBookings
-} from "../controllers/booking.controller.js";
-import { body, param } from "express-validator";
+    deleteBooking,
+    getAllBookings
+} = require("../controllers/booking.controller");
+const { body, param } = require("express-validator");
+
 
 const router = express.Router();
 
@@ -56,4 +58,4 @@ router.delete("/:bookingId",
 // Get all bookings for a property
 router.get("/all", getAllBookings);
 
-export default router;
+module.exports = router;

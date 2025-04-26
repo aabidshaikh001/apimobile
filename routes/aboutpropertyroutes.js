@@ -1,10 +1,10 @@
-import express from "express";
-import {
+const express = require("express");
+const {
     createAboutProperty,
     getAboutPropertyByPropertyId,
     updateAboutProperty,
     deleteAboutProperty
-} from "../controllers/aboutpropertycontoller.js";
+} = require("../controllers/aboutpropertycontoller");
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.get("/:propertyId", getAboutPropertyByPropertyId);  // Get by Property ID
 router.put("/:propertyId", updateAboutProperty);  // Update AboutProperty
 router.delete("/:propertyId", deleteAboutProperty);  // Delete AboutProperty
 
-export default router;
+module.exports = router;  // CommonJS export

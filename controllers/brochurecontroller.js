@@ -1,6 +1,6 @@
-import Brochures from "../models/brochure.js";
+const Brochures = require("../models/brochure");
 
-export const upsertBrochure = async (req, res) => {
+exports.upsertBrochure = async (req, res) => {
     try {
         const { propertyId, title, logo, pdfLink } = req.body;
         await Brochures.upsertBrochure({ propertyId, title, logo, pdfLink });
@@ -10,7 +10,7 @@ export const upsertBrochure = async (req, res) => {
     }
 };
 
-export const getBrochureByPropertyId = async (req, res) => {
+exports.getBrochureByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const brochure = await Brochures.getBrochureByPropertyId(propertyId);
@@ -24,7 +24,7 @@ export const getBrochureByPropertyId = async (req, res) => {
     }
 };
 
-export const deleteBrochureByPropertyId = async (req, res) => {
+exports.deleteBrochureByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         await Brochures.deleteBrochureByPropertyId(propertyId);

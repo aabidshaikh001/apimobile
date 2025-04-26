@@ -1,6 +1,6 @@
-import BuilderDetails from "../models/BuilderDeatails.js";
+const BuilderDetails = require("../models/BuilderDeatails");
 
-export const upsertBuilderDetails = async (req, res) => {
+exports.upsertBuilderDetails = async (req, res) => {
     try {
         const { propertyId, name, established, logo, overview, experience, certifications, projects } = req.body;
         await BuilderDetails.upsertBuilderDetails({ propertyId, name, established, logo, overview, experience, certifications, projects });
@@ -10,7 +10,7 @@ export const upsertBuilderDetails = async (req, res) => {
     }
 };
 
-export const getBuilderDetailsByPropertyId = async (req, res) => {
+exports.getBuilderDetailsByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const builderDetails = await BuilderDetails.getBuilderDetailsByPropertyId(propertyId);
@@ -24,7 +24,7 @@ export const getBuilderDetailsByPropertyId = async (req, res) => {
     }
 };
 
-export const deleteBuilderDetailsByPropertyId = async (req, res) => {
+exports.deleteBuilderDetailsByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         await BuilderDetails.deleteBuilderDetailsByPropertyId(propertyId);
@@ -33,3 +33,11 @@ export const deleteBuilderDetailsByPropertyId = async (req, res) => {
         res.status(500).json({ error: "Error deleting builder details", details: error.message });
     }
 };
+exports.getAllBuilderDetails = async (req, res) => {
+    try {
+        const builderDetails = await BuilderDetails.getAllBuilderDetails();
+        res.status(200).json(builderDetails);
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching all builder details", details: error.message });
+    }
+}

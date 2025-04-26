@@ -1,5 +1,5 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
 
 const Amenities = {
     // Create Amenities Table
@@ -25,7 +25,7 @@ const Amenities = {
         }
     },
 
-    // Insert Amenity
+    // Insert Single Amenity
     insertAmenity: async (propertyId, amenity) => {
         try {
             const pool = await connectToDB();
@@ -41,6 +41,34 @@ const Amenities = {
             console.log("Amenity inserted successfully.");
         } catch (error) {
             console.error("Error inserting amenity:", error);
+        }
+    },
+
+    // 🔥 Insert Multiple Amenities
+    insertMultipleAmenities: async (propertyId, amenities) => {
+        try {
+            const pool = await connectToDB();
+            const transaction = new sql.Transaction(pool);
+            await transaction.begin();
+
+            const request = new sql.Request(transaction);
+
+            for (const amenity of amenities) {
+                await request
+                    .input("propertyId", sql.VarChar(50), propertyId)
+                    .input("icon", sql.NVarChar(255), amenity.icon)
+                    .input("label", sql.NVarChar(255), amenity.label)
+                    .query(`
+                        INSERT INTO MBAmenities (propertyId, icon, label)
+                        VALUES (@propertyId, @icon, @label)
+                    `);
+                request.parameters = {}; // Clear parameters before next iteration
+            }
+
+            await transaction.commit();
+            console.log("Multiple amenities inserted successfully.");
+        } catch (error) {
+            console.error("Error inserting multiple amenities:", error);
         }
     },
 
@@ -74,4 +102,4 @@ const Amenities = {
     }
 };
 
-export default Amenities;
+module.exports = Amenities;

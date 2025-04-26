@@ -1,8 +1,8 @@
-import cloudinaryService from "../utils/cloudinaryService.js";
-import User from "../models/User.js";
+const cloudinaryService = require("../utils/cloudinaryService.js");
+const User = require("../models/User.js");
 
 // Upload profile image
-export const uploadProfileImage = async (req, res) => {
+exports.uploadProfileImage = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
@@ -31,7 +31,7 @@ export const uploadProfileImage = async (req, res) => {
 };
 
 // Upload document
-export const uploadDocument = async (req, res) => {
+exports.uploadDocument = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });

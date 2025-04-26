@@ -1,11 +1,12 @@
-import Rating from "../models/Rating.js";
+const Rating = require("../models/Rating");
 
-export const insertRating = async (req, res) => {
+exports.insertRating = async (req, res) => {
     try {
         const { propertyId, name, avatar, rating, review } = req.body;
-        if (rating < 1 || rating > 5) {
-            return res.status(400).json({ error: "Rating must be between 1 and 5" });
+        if (!propertyId || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: "Invalid data. Rating must be between 1 and 5, and propertyId is required." });
         }
+
         await Rating.insertRating({ propertyId, name, avatar, rating, review });
         res.status(201).json({ message: "Rating added successfully" });
     } catch (error) {
@@ -13,7 +14,7 @@ export const insertRating = async (req, res) => {
     }
 };
 
-export const getRatingsByPropertyId = async (req, res) => {
+exports.getRatingsByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const ratings = await Rating.getRatingsByPropertyId(propertyId);
@@ -23,7 +24,7 @@ export const getRatingsByPropertyId = async (req, res) => {
     }
 };
 
-export const deleteRatingById = async (req, res) => {
+exports.deleteRatingById = async (req, res) => {
     try {
         const { id } = req.params;
         await Rating.deleteRatingById(id);
@@ -33,7 +34,7 @@ export const deleteRatingById = async (req, res) => {
     }
 };
 
-export const deleteRatingsByPropertyId = async (req, res) => {
+exports.deleteRatingsByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         await Rating.deleteRatingsByPropertyId(propertyId);

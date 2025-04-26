@@ -1,48 +1,47 @@
-import Amenities from "../models/Amenities.js";
+const Amenities = require("../models/Amenities");
 
-// Create Amenity
-export const createAmenity = async (req, res) => {
-    try {
-        const { propertyId, icon, label } = req.body;
+const amenitiesController = {
+    // Insert multiple amenities
+    create: async (req, res) => {
+        const { propertyId } = req.params;
+        const amenities = req.body;
 
-        if (!propertyId || !icon || !label) {
-            return res.status(400).json({ message: "Property ID, icon, and label are required." });
+        if (!Array.isArray(amenities) || amenities.length === 0) {
+            return res.status(400).json({ error: "Amenities should be a non-empty array." });
         }
 
-        await Amenities.insertAmenity(propertyId, { icon, label });
-        res.status(201).json({ message: "Amenity added successfully." });
-    } catch (error) {
-        console.error("Error creating amenity:", error);
-        res.status(500).json({ message: "Internal server error." });
-    }
-};
-
-// Get Amenities by Property ID
-export const getAmenitiesByPropertyId = async (req, res) => {
-    try {
-        const { propertyId } = req.params;
-        const amenities = await Amenities.getAmenitiesByPropertyId(propertyId);
-
-        if (!amenities || amenities.length === 0) {
-            return res.status(404).json({ message: "No amenities found for this property." });
+        try {
+            await Amenities.insertMultipleAmenities(propertyId, amenities);
+            res.status(201).json({ message: "Amenities added successfully." });
+        } catch (error) {
+            console.error("Error in create controller:", error);
+            res.status(500).json({ error: "Failed to add amenities." });
         }
+    },
 
-        res.status(200).json(amenities);
-    } catch (error) {
-        console.error("Error fetching amenities:", error);
-        res.status(500).json({ message: "Internal server error." });
-    }
-};
-
-// Delete Amenities by Property ID
-export const deleteAmenitiesByPropertyId = async (req, res) => {
-    try {
+    // Get amenities by property ID
+    getByPropertyId: async (req, res) => {
         const { propertyId } = req.params;
+        try {
+            const data = await Amenities.getAmenitiesByPropertyId(propertyId);
+            res.status(200).json(data);
+        } catch (error) {
+            console.error("Error fetching amenities:", error);
+            res.status(500).json({ error: "Failed to fetch amenities." });
+        }
+    },
 
-        await Amenities.deleteAmenitiesByPropertyId(propertyId);
-        res.status(200).json({ message: "Amenities deleted successfully." });
-    } catch (error) {
-        console.error("Error deleting amenities:", error);
-        res.status(500).json({ message: "Internal server error." });
+    // Delete all amenities by property ID
+    deleteByPropertyId: async (req, res) => {
+        const { propertyId } = req.params;
+        try {
+            await Amenities.deleteAmenitiesByPropertyId(propertyId);
+            res.status(200).json({ message: "Amenities deleted successfully." });
+        } catch (error) {
+            console.error("Error deleting amenities:", error);
+            res.status(500).json({ error: "Failed to delete amenities." });
+        }
     }
 };
+
+module.exports = amenitiesController;

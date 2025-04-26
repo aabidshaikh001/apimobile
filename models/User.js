@@ -1,5 +1,5 @@
-import sql from "mssql"
-import connectToDB from "../config/db.js"
+const sql = require("mssql") // const mssql library
+const connectToDB = require("../config/db") // const database connection
 
 class User {
   // Create users table if it doesn't exist
@@ -8,7 +8,8 @@ class User {
       const pool = await connectToDB()
 
       await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='users' AND xtype='U')
+   IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='users' AND xtype='U')
+
         CREATE TABLE users (
           id VARCHAR(36) PRIMARY KEY,
           email VARCHAR(255) NOT NULL UNIQUE,
@@ -29,7 +30,10 @@ class User {
 
       // Create documents table for storing multiple documents
       await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='user_documents' AND xtype='U')
+  IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='user_documents' AND xtype='U')
+
+
+
         CREATE TABLE user_documents (
           id VARCHAR(36) PRIMARY KEY,
           userId VARCHAR(36) NOT NULL,
@@ -159,7 +163,7 @@ class User {
     try {
       const pool = await connectToDB()
   
-      // Remove 'id' from userData to avoid duplicate parameter error
+      // Remove 'id' FROM userData to avoid duplicate parameter error
       if ("id" in userData) {
         delete userData.id
       }
@@ -235,5 +239,5 @@ class User {
   }
 }
 
-export default User
+module.exports = User
 

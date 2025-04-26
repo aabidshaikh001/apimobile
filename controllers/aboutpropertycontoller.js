@@ -1,7 +1,7 @@
-import AboutProperty from "../models/AboutProperty.js";
+const AboutProperty = require("../models/AboutProperty");
 
 // Create AboutProperty
-export const createAboutProperty = async (req, res) => {
+exports.createAboutProperty = async (req, res) => {
     try {
         const { propertyId, description } = req.body;
 
@@ -18,7 +18,7 @@ export const createAboutProperty = async (req, res) => {
 };
 
 // Get AboutProperty by Property ID
-export const getAboutPropertyByPropertyId = async (req, res) => {
+exports.getAboutPropertyByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const aboutProperty = await AboutProperty.getAboutPropertyByPropertyId(propertyId);
@@ -35,7 +35,7 @@ export const getAboutPropertyByPropertyId = async (req, res) => {
 };
 
 // Update AboutProperty
-export const updateAboutProperty = async (req, res) => {
+exports.updateAboutProperty = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const { description } = req.body;
@@ -53,7 +53,7 @@ export const updateAboutProperty = async (req, res) => {
 };
 
 // Delete AboutProperty
-export const deleteAboutProperty = async (req, res) => {
+exports.deleteAboutProperty = async (req, res) => {
     try {
         const { propertyId } = req.params;
 

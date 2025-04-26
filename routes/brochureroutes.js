@@ -1,9 +1,9 @@
-import express from "express";
-import { 
+const express = require("express");
+const { 
     upsertBrochure, 
     getBrochureByPropertyId, 
     deleteBrochureByPropertyId 
-} from "../controllers/brochurecontroller.js";
+} = require("../controllers/brochurecontroller");
 
 const router = express.Router();
 
@@ -11,4 +11,4 @@ router.post("/", upsertBrochure);
 router.get("/:propertyId", getBrochureByPropertyId);
 router.delete("/:propertyId", deleteBrochureByPropertyId);
 
-export default router;
+module.exports = router; // CommonJS export

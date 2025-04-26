@@ -1,5 +1,12 @@
-import {getPropertyById, getAllProperties,deleteProperty,insertProperty,updateProperty,  getFeaturedProperties, getSavedProperties } from "../controllers/propertyController.js";
-import express from "express";
+const express = require("express");
+
+const { getAllProperties,
+    getPropertyById,
+    insertProperty,
+    updateProperty,
+    deleteProperty,
+    getFeaturedProperties,
+    getSavedProperties } = require("../controllers/propertyController");
 
 const router = express.Router();
 
@@ -18,4 +25,4 @@ router.get("/featured", getFeaturedProperties);
 // Get saved properties
 router.get("/saved/:userId", getSavedProperties);
 // Export the router
-export default router;
+module.exports = router; // CommonJS export

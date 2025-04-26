@@ -1,8 +1,7 @@
-import express from "express"
-import multer from "multer"
-import * as uploadController from "../controllers/uploadController.js"
-import { authenticate } from "../middlewares/authMiddleware.js"
-
+const express = require("express");
+const multer = require("multer");
+const uploadController = require("../controllers/uploadController");
+const { authenticate } = require("../middlewares/authMiddleware");
 const router = express.Router()
 
 // Configure multer for memory storage
@@ -20,5 +19,5 @@ router.post("/profile-image", authenticate, upload.single("image"), uploadContro
 // Upload document
 router.post("/document", authenticate, upload.single("document"), uploadController.uploadDocument)
 
-export default router
 
+module.exports = router; // CommonJS export

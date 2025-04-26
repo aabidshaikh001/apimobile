@@ -1,5 +1,6 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 const Quries = {
     // Create Table
     createTable: async () => {
@@ -113,4 +114,4 @@ const Quries = {
         }
     }
 };
-export default Quries;
+module.exports = Quries;

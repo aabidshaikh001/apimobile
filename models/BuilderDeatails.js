@@ -1,5 +1,7 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 
 const BuilderDetails = {
     createTable: async () => {
@@ -87,7 +89,22 @@ const BuilderDetails = {
             return null;
         }
     },
-
+    getAllBuilderDetails: async () => {
+        try {
+          const pool = await connectToDB();
+          const query = "SELECT * FROM MBBuilderDetails";
+          const result = await pool.request().query(query);
+      
+          return result.recordset.map(builder => ({
+            ...builder,
+            projects: JSON.parse(builder.projects || "[]"),
+          }));
+        } catch (error) {
+          console.error("Error fetching all builder details:", error);
+          return [];
+        }
+      },
+      
     deleteBuilderDetailsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
@@ -99,7 +116,8 @@ const BuilderDetails = {
         } catch (error) {
             console.error("Error deleting builder details:", error);
         }
-    }
+    },
+   
 };
 
-export default BuilderDetails;
+module.exports = BuilderDetails;

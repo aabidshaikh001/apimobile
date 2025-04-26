@@ -1,6 +1,6 @@
-import sql from "mssql"
-import connectToDB from "../config/db.js"
-import crypto from "crypto"
+const sql = require("mssql") // const mssql library
+const connectToDB = require("../config/db") // const database connection
+const crypto = require("crypto") // const crypto library
 
 class OTP {
   // Create OTP table if it doesn't exist
@@ -37,7 +37,7 @@ class OTP {
       // Generate a 6-digit OTP
       const otp = this.generateRandomOTP()
 
-      // Set expiration time (15 minutes from now)
+      // Set expiration time (15 minutes FROM now)
       const expiresAt = new Date()
       expiresAt.setMinutes(expiresAt.getMinutes() + 15)
 
@@ -130,5 +130,5 @@ class OTP {
   }
 }
 
-export default OTP
+module.exports = OTP
 

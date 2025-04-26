@@ -1,5 +1,5 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
 
 const BankInfo = {
     createTable: async () => {
@@ -27,7 +27,21 @@ const BankInfo = {
     insertBankInfo: async (bankInfo) => {
         try {
             const pool = await connectToDB();
-            const query = `
+            
+            // Check if bank info already exists for this propertyId
+            const checkQuery = "SELECT * FROM MBBankInfo WHERE propertyId = @propertyId";
+            const existingRecord = await pool.request()
+                .input("propertyId", sql.VarChar(50), bankInfo.propertyId)
+                .query(checkQuery);
+
+            if (existingRecord.recordset.length > 0) {
+                // If the bank info already exists, return a message
+                console.log("Bank info for this property already exists");
+                return { message: "Bank info for this property already exists" };
+            }
+            
+            // Insert new bank info if it does not exist
+            const insertQuery = `
                 INSERT INTO MBBankInfo (propertyId, name, logo)
                 VALUES (@propertyId, @name, @logo)
             `;
@@ -35,10 +49,13 @@ const BankInfo = {
                 .input("propertyId", sql.VarChar(50), bankInfo.propertyId)
                 .input("name", sql.NVarChar(255), bankInfo.name)
                 .input("logo", sql.NVarChar(255), bankInfo.logo)
-                .query(query);
+                .query(insertQuery);
+            
             console.log("Bank info inserted successfully.");
+            return { message: "Bank info inserted successfully." };
         } catch (error) {
             console.error("Error inserting bank info:", error);
+            return { message: "Error inserting bank info", error };
         }
     },
 
@@ -70,4 +87,4 @@ const BankInfo = {
     }
 };
 
-export default BankInfo;
+module.exports = BankInfo;

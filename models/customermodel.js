@@ -1,5 +1,6 @@
-import connectToDB from "../config/db.js";
-import sql from "mssql";
+const connectToDB = require("../config/db");
+const sql = require("mssql");
+
 
 const customermodel = {
     createTable: async () => {
@@ -116,4 +117,4 @@ const customermodel = {
         }
     }
 };
-export default customermodel;
+module.exports = customermodel;

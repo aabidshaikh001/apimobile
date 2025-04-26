@@ -1,11 +1,11 @@
-import User from "../models/User.js"
+const User = require("../models/User.js")
 
 // Get user profile
-export const getProfile = async (req, res) => {
+exports.getProfile = async (req, res) => {
   try {
     const userId = req.user.id
 
-    // Get user from database
+    // Get user = require(database
     const user = await User.findById(userId)
 
     if (!user) {
@@ -20,7 +20,7 @@ export const getProfile = async (req, res) => {
 }
 
 // Update user profile with better error handling
-export const updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
     const userId = req.user.id
     const userData = req.body
@@ -57,11 +57,11 @@ export const updateProfile = async (req, res) => {
 }
 
 // Get profile by ID (admin only)
-export const getProfileById = async (req, res) => {
+exports.getProfileById = async (req, res) => {
   try {
     const { id } = req.params
 
-    // Get user from database
+    // Get user = require(database
     const user = await User.findById(id)
 
     if (!user) {

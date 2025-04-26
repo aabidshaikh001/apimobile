@@ -1,6 +1,6 @@
-import PaymentPlan from "../models/PaymentPlan.js";
+const PaymentPlan = require("../models/PaymentPlan.js"); 
 
-export const insertPaymentPlan = async (req, res) => {
+exports.insertPaymentPlan = async (req, res) => {
     try {
         const { propertyId, payment, milestone } = req.body;
         await PaymentPlan.insertPaymentPlan({ propertyId, payment, milestone });
@@ -10,7 +10,7 @@ export const insertPaymentPlan = async (req, res) => {
     }
 };
 
-export const getPaymentPlansByPropertyId = async (req, res) => {
+exports.getPaymentPlansByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const paymentPlans = await PaymentPlan.getPaymentPlansByPropertyId(propertyId);
@@ -20,7 +20,7 @@ export const getPaymentPlansByPropertyId = async (req, res) => {
     }
 };
 
-export const deletePaymentPlanById = async (req, res) => {
+exports.deletePaymentPlanById = async (req, res) => {
     try {
         const { id } = req.params;
         await PaymentPlan.deletePaymentPlanById(id);
@@ -30,7 +30,7 @@ export const deletePaymentPlanById = async (req, res) => {
     }
 };
 
-export const deletePaymentPlansByPropertyId = async (req, res) => {
+exports.deletePaymentPlansByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         await PaymentPlan.deletePaymentPlansByPropertyId(propertyId);

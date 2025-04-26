@@ -1,6 +1,5 @@
-import Quries from "../models/Quries.js";
-
-export const createQuries = async (req, res) => {
+const Quries = require("../models/Quries.js");
+exports.createQuries = async (req, res) => {
     const { subject, details, phone, email, category } = req.body;
     try {
         await Quries.insertQuries(subject, details, phone, email, category);
@@ -10,7 +9,7 @@ export const createQuries = async (req, res) => {
     }
 };
 
-export const getQuriesById = async (req, res) => {
+exports.getQuriesById = async (req, res) => {
     const { id } = req.params;
     try {
         const query = await Quries.getQuriesById(id);
@@ -21,7 +20,7 @@ export const getQuriesById = async (req, res) => {
     }
 };
 
-export const getAllQuries = async (req, res) => {
+exports.getAllQuries = async (req, res) => {
     try {
         const queries = await Quries.getAllQuries();
         res.status(200).json(queries);
@@ -30,7 +29,7 @@ export const getAllQuries = async (req, res) => {
     }
 };
 
-export const updateQuries = async (req, res) => {
+exports.updateQuries = async (req, res) => {
     const { id } = req.params;
     const { subject, details, phone, email, category } = req.body;
     try {
@@ -41,7 +40,7 @@ export const updateQuries = async (req, res) => {
     }
 };
 
-export const deleteQuries = async (req, res) => {
+exports.deleteQuries = async (req, res) => {
     const { id } = req.params;
     try {
         await Quries.deleteQuries(id);

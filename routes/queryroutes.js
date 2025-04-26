@@ -1,11 +1,11 @@
-import express from "express";
-import {
+const express = require("express");
+const {
     createQuries,
     getQuriesById,
     getAllQuries,
     updateQuries,
     deleteQuries
-} from "../controllers/queriescontrollers.js";
+} = require("../controllers/queriescontrollers");
 
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.get("/:id", getQuriesById);
 router.put("/:id", updateQuries);
 router.delete("/:id", deleteQuries);
 
-export default router;
+module.exports = router; // CommonJS export

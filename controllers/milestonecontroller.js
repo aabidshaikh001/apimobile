@@ -1,6 +1,6 @@
-import Milestone from "../models/Milestone.js";
+const Milestone = require("../models/Milestone.js");
 
-export const insertMilestone = async (req, res) => {
+exports.insertMilestone = async (req, res) => {
     try {
         const { propertyId, name, condition, brokerage } = req.body;
         await Milestone.insertMilestone({ propertyId, name, condition, brokerage });
@@ -10,7 +10,7 @@ export const insertMilestone = async (req, res) => {
     }
 };
 
-export const getMilestonesByPropertyId = async (req, res) => {
+exports.getMilestonesByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         const milestones = await Milestone.getMilestonesByPropertyId(propertyId);
@@ -20,7 +20,7 @@ export const getMilestonesByPropertyId = async (req, res) => {
     }
 };
 
-export const deleteMilestoneById = async (req, res) => {
+exports.deleteMilestoneById = async (req, res) => {
     try {
         const { id } = req.params;
         await Milestone.deleteMilestoneById(id);
@@ -30,7 +30,7 @@ export const deleteMilestoneById = async (req, res) => {
     }
 };
 
-export const deleteMilestonesByPropertyId = async (req, res) => {
+exports.deleteMilestonesByPropertyId = async (req, res) => {
     try {
         const { propertyId } = req.params;
         await Milestone.deleteMilestonesByPropertyId(propertyId);
