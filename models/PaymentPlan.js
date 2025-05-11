@@ -7,14 +7,14 @@ const PaymentPlan = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBPaymentPlan')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropPayPlan')
                 BEGIN
-                    CREATE TABLE MBPaymentPlan (
+                    CREATE TABLE REMMstPropPayPlan (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL,
                         payment NVARCHAR(50),
                         milestone NVARCHAR(MAX),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -29,7 +29,7 @@ const PaymentPlan = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBPaymentPlan (propertyId, payment, milestone)
+                INSERT INTO REMMstPropPayPlan (propertyId, payment, milestone)
                 VALUES (@propertyId, @payment, @milestone);
             `;
             await pool.request()
@@ -46,7 +46,7 @@ const PaymentPlan = {
     getPaymentPlansByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBPaymentPlan WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstPropPayPlan WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -60,7 +60,7 @@ const PaymentPlan = {
     deletePaymentPlanById: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBPaymentPlan WHERE id = @id";
+            const query = "DELETE FROM REMMstPropPayPlan WHERE id = @id";
             await pool.request()
                 .input("id", sql.Int, id)
                 .query(query);
@@ -73,7 +73,7 @@ const PaymentPlan = {
     deletePaymentPlansByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBPaymentPlan WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstPropPayPlan WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

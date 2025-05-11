@@ -14,7 +14,7 @@ const AboutProject = {
           projectName NVARCHAR(255),
           projectDescription NVARCHAR(MAX),
           projectDetails NVARCHAR(MAX),
-          FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
         );
       `);
       console.log("✅ AboutProject table ensured.");

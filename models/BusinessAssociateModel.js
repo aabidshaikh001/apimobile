@@ -5,9 +5,9 @@ const sql = require("mssql");
         try {
             const pool = await connectToDB();
             await pool.request().query(`
-              IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'BAProfiles')
+              IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'CSMTranBA')
               BEGIN
-                CREATE TABLE BAProfiles (
+                CREATE TABLE CSMTranBA (
                   id INT IDENTITY(1,1) PRIMARY KEY,
                   name NVARCHAR(255) NOT NULL,
                   role NVARCHAR(255) NOT NULL,
@@ -28,7 +28,7 @@ const sql = require("mssql");
                 )
               END
             `);
-            console.log("✅ BAProfiles table initialized.");
+            console.log("✅ CSMTranBA table initialized.");
           } catch (error) {
             console.error("❌ Error initializing table:", error);
           }
@@ -36,10 +36,10 @@ const sql = require("mssql");
         async getAllProfiles() {
             try {
                 const pool = await connectToDB();
-                const result = await pool.request().query("SELECT * FROM BAProfiles");
+                const result = await pool.request().query("SELECT * FROM CSMTranBA");
                 return result.recordset;
               } catch (error) {
-                console.error("❌ Error fetching BAProfiles:", error);
+                console.error("❌ Error fetching CSMTranBA:", error);
                 throw error;
               }
         },
@@ -49,7 +49,7 @@ const sql = require("mssql");
                 const result = await pool
                   .request()
                   .input("id", sql.Int, id)
-                  .query("SELECT * FROM BAProfiles WHERE id = @id");
+                  .query("SELECT * FROM CSMTranBA WHERE id = @id");
                 return result.recordset[0];
               } catch (error) {
                 console.error("❌ Error fetching profile:", error);
@@ -82,7 +82,7 @@ const sql = require("mssql");
                   .input("testimonials", sql.NVarChar, JSON.stringify(profile.testimonials || []))
                   .input("publications", sql.NVarChar, JSON.stringify(profile.publications || []))
                   .query(`
-                    INSERT INTO BAProfiles (
+                    INSERT INTO CSMTranBA (
                       name,
                       role,
                       company,
@@ -133,7 +133,7 @@ const sql = require("mssql");
                 const result = await pool
                   .request()
                   .input("id", sql.Int, id)
-                  .query("DELETE FROM BAProfiles WHERE id = @id");
+                  .query("DELETE FROM CSMTranBA WHERE id = @id");
                 return result;
               } catch (error) {
                 console.error("❌ Error deleting profile:", error);

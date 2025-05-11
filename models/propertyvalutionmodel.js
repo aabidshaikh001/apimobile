@@ -5,9 +5,9 @@ const PropertyValuationModel = {
         try {
             const pool = await connectToDB();
             await pool.request().query(`
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'propertyValuation')
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'RESVALTranLeads')
                 BEGIN
-                    CREATE TABLE propertyValuation (
+                    CREATE TABLE RESVALTranLeads (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         name NVARCHAR(255) NOT NULL,
                         email NVARCHAR(255) NOT NULL,
@@ -31,7 +31,7 @@ const PropertyValuationModel = {
     getAll: async () => {
         try {
             const pool = await connectToDB();
-            const result = await pool.request().query("SELECT * FROM propertyValuation");
+            const result = await pool.request().query("SELECT * FROM RESVALTranLeads");
             return result.recordset;
         } catch (err) {
             console.error("❌ Error fetching records:", err.message);
@@ -58,7 +58,7 @@ const PropertyValuationModel = {
                 .input("location", sql.NVarChar, location)
                 .input("message", sql.NVarChar(sql.MAX), message)
                 .query(`
-                    INSERT INTO propertyValuation (name, email, phone, whatsapp, propertyType, squareFootage, bathrooms, bedrooms, message, location)
+                    INSERT INTO RESVALTranLeads (name, email, phone, whatsapp, propertyType, squareFootage, bathrooms, bedrooms, message, location)
                     VALUES (@name, @email, @phone, @whatsapp, @propertyType, @squareFootage, @bathrooms, @bedrooms, @message, @location);
                 `);
             return result.rowsAffected;
@@ -73,7 +73,7 @@ const PropertyValuationModel = {
             const result = await pool
                 .request()
                 .input("id", sql.Int, id)
-                .query("DELETE FROM propertyValuation WHERE id = @id");
+                .query("DELETE FROM RESVALTranLeads WHERE id = @id");
             return result.rowsAffected;
         } catch (err) {
             console.error("❌ Error deleting record:", err.message);
@@ -101,7 +101,7 @@ const PropertyValuationModel = {
                 .input("message", sql.NVarChar(sql.MAX), message)
                 .input("location", sql.NVarChar, location)
                 .query(`
-                    UPDATE propertyValuation
+                    UPDATE RESVALTranLeads
                     SET name = @name, email = @email, phone = @phone, whatsapp = @whatsapp, propertyType = @propertyType, squareFootage = @squareFootage, bathrooms = @bathrooms, bedrooms = @bedrooms, message = @message, location = @location
                     WHERE id = @id;
                 `);

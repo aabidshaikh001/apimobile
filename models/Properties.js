@@ -5,7 +5,7 @@ const sql = require("mssql");
 const generatePropertyId = async () => {
     try {
         const pool = await connectToDB();
-        const query = `SELECT TOP 1 id FROM MBProperties ORDER BY id DESC`;
+        const query = `SELECT TOP 1 id FROM REMMstProperties ORDER BY id DESC`;
         const result = await pool.request().query(query);
 
         if (result.recordset.length > 0) {
@@ -31,9 +31,9 @@ const Properties = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBProperties')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstProperties')
                 BEGIN
-                    CREATE TABLE MBProperties (
+                    CREATE TABLE REMMstProperties (
                         id VARCHAR(50) PRIMARY KEY,
                         title NVARCHAR(255),
                         location NVARCHAR(255),
@@ -74,7 +74,7 @@ const Properties = {
             if (!newId) throw new Error("Failed to generate property ID");
 
             const query = `
-                INSERT INTO MBProperties (id, title, location, price, pricePerSqft, latitude, longitude, propertyType, status, propertyFor, images, brokerage, tag, readyToMove, discount, visitBonus, bhkOptions, isSaved, isFeatured, superBuiltUpArea, carpetArea, type)
+                INSERT INTO REMMstProperties (id, title, location, price, pricePerSqft, latitude, longitude, propertyType, status, propertyFor, images, brokerage, tag, readyToMove, discount, visitBonus, bhkOptions, isSaved, isFeatured, superBuiltUpArea, carpetArea, type)
                 VALUES (@id, @title, @location, @price, @pricePerSqft, @latitude, @longitude, @propertyType, @status, @propertyFor, @images, @brokerage, @tag, @readyToMove, @discount, @visitBonus, @bhkOptions, @isSaved, @isFeatured, @superBuiltUpArea, @carpetArea, @type)
             `;
             await pool.request()
@@ -112,7 +112,7 @@ const Properties = {
         try {
             const pool = await connectToDB();
             const query = `
-                UPDATE MBProperties
+                UPDATE REMMstProperties
                 SET title = @title,
                     location = @location,
                     price = @price,
@@ -168,7 +168,7 @@ const Properties = {
     getAllProperties: async () => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBProperties";
+            const query = "SELECT * FROM REMMstProperties";
             const result = await pool.request().query(query);
             return result.recordset;
         } catch (error) {
@@ -180,7 +180,7 @@ const Properties = {
     getPropertyById: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBProperties WHERE id = @id";
+            const query = "SELECT * FROM REMMstProperties WHERE id = @id";
             const result = await pool.request()
                 .input("id", sql.VarChar(50), id)
                 .query(query);
@@ -196,7 +196,7 @@ const Properties = {
     deleteProperty: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBProperties WHERE id = @id";
+            const query = "DELETE FROM REMMstProperties WHERE id = @id";
             await pool.request()
                 .input("id", sql.VarChar(50), id)
                 .query(query);
@@ -209,7 +209,7 @@ const Properties = {
     getFeaturedProperties: async () => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBProperties WHERE isFeatured = 1";
+            const query = "SELECT * FROM REMMstProperties WHERE isFeatured = 1";
             const result = await pool.request().query(query);
             return result.recordset;
         } catch (error) {
@@ -221,7 +221,7 @@ const Properties = {
     getSavedProperties: async (userId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBProperties WHERE isSaved = 1 AND userId = @userId";
+            const query = "SELECT * FROM REMMstProperties WHERE isSaved = 1 AND userId = @userId";
             const result = await pool.request()
                 .input("userId", sql.VarChar(50), userId)
                 .query(query);

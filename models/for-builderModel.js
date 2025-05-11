@@ -5,9 +5,9 @@ const forbuilderModel = {
     try {
       const pool = await connectToDB();
       await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'forbuilder')
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstSaleLeadBuilder')
         BEGIN
-          CREATE TABLE forbuilder (
+          CREATE TABLE REMMstSaleLeadBuilder (
             id INT IDENTITY(1,1) PRIMARY KEY,
             companyName NVARCHAR(255) NOT NULL,
             contactPerson NVARCHAR(255) NOT NULL,
@@ -22,7 +22,7 @@ const forbuilderModel = {
            
         END
       `);
-      console.log("✅ forbuilder table initialized.");
+      console.log("✅ REMMstSaleLeadBuilder table initialized.");
     } catch (error) {
       console.error("❌ Error initializing table:", error);
     }
@@ -30,10 +30,10 @@ const forbuilderModel = {
   getAllProfiles: async () => {
     try {
       const pool = await connectToDB();
-      const result = await pool.request().query("SELECT * FROM forbuilder");
+      const result = await pool.request().query("SELECT * FROM REMMstSaleLeadBuilder");
       return result.recordset;
     } catch (error) {
-      console.error("❌ Error fetching forbuilder:", error);
+      console.error("❌ Error fetching REMMstSaleLeadBuilder:", error);
       throw error;
     }
   },
@@ -43,7 +43,7 @@ const forbuilderModel = {
       const result = await pool
         .request()
         .input("id", sql.Int, id)
-        .query("SELECT * FROM forbuilder WHERE id = @id");
+        .query("SELECT * FROM REMMstSaleLeadBuilder WHERE id = @id");
       return result.recordset[0];
     } catch (error) {
       console.error("❌ Error fetching profile:", error);
@@ -65,7 +65,7 @@ const forbuilderModel = {
         .input("priceRange", sql.NVarChar, profile.priceRange)
         .input("message", sql.NVarChar, profile.message)
         .query(`
-          INSERT INTO forbuilder (companyName, contactPerson, email, phone, projectType, projectLocation, numberOfUnits, priceRange, message)
+          INSERT INTO REMMstSaleLeadBuilder (companyName, contactPerson, email, phone, projectType, projectLocation, numberOfUnits, priceRange, message)
           VALUES (@companyName, @contactPerson, @email, @phone, @projectType, @projectLocation, @numberOfUnits, @priceRange, @message);
           SELECT SCOPE_IDENTITY() AS id;
         `);

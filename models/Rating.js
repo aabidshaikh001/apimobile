@@ -6,16 +6,16 @@ const Rating = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBRating')
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropCustRating')
                 BEGIN
-                    CREATE TABLE MBRating (
+                    CREATE TABLE REMMstPropCustRating (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL,
                         name NVARCHAR(255),
                         avatar NVARCHAR(255),
                         rating INT CHECK (rating BETWEEN 1 AND 5),
                         review NVARCHAR(MAX),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -30,7 +30,7 @@ const Rating = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBRating (propertyId, name, avatar, rating, review)
+                INSERT INTO REMMstPropCustRating (propertyId, name, avatar, rating, review)
                 VALUES (@propertyId, @name, @avatar, @rating, @review);
             `;
             await pool.request()
@@ -48,7 +48,7 @@ const Rating = {
     getRatingsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBRating WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstPropCustRating WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -61,7 +61,7 @@ const Rating = {
     deleteRatingById: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBRating WHERE id = @id";
+            const query = "DELETE FROM REMMstPropCustRating WHERE id = @id";
             await pool.request()
                 .input("id", sql.Int, id)
                 .query(query);
@@ -73,7 +73,7 @@ const Rating = {
     deleteRatingsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBRating WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstPropCustRating WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

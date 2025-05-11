@@ -15,7 +15,7 @@ const AboutLocation = {
                         icon NVARCHAR(255),
                         label NVARCHAR(255),
                         distance NVARCHAR(50),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;

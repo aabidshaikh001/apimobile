@@ -127,23 +127,7 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(express.json({ limit: "10mb" })) // Increase JSON payload limit
 app.use(morgan("dev"))
-const allowedOrigins = [
-  'https://sales.realestatecompany.co.in',
-  'http://localhost:3000', // during development
-  'https://realestatecompany.co.in', // production
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-}));
-
+app.use(cors())
 
 // Add request logging
 app.use((req, res, next) => {

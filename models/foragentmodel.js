@@ -5,9 +5,9 @@ const foragentModel = {
         try {
         const pool = await connectToDB();
         await pool.request().query(`
-            IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'foragent')
+            IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstSaleLeadAgent')
             BEGIN
-            CREATE TABLE foragent (
+            CREATE TABLE REMMstSaleLeadAgent (
                 id INT IDENTITY(1,1) PRIMARY KEY,
                 fullName NVARCHAR(255) NOT NULL,
                 email NVARCHAR(255) NOT NULL UNIQUE,
@@ -21,7 +21,7 @@ const foragentModel = {
              
             END
         `);
-        console.log("✅ foragent table initialized.");
+        console.log("✅ REMMstSaleLeadAgent table initialized.");
         } catch (error) {
         console.error("❌ Error initializing table:", error);
         }
@@ -29,10 +29,10 @@ const foragentModel = {
     getAllProfiles: async () => {
         try {
         const pool = await connectToDB();
-        const result = await pool.request().query("SELECT * FROM foragent");
+        const result = await pool.request().query("SELECT * FROM REMMstSaleLeadAgent");
         return result.recordset;
         } catch (error) {
-        console.error("❌ Error fetching foragent:", error);
+        console.error("❌ Error fetching REMMstSaleLeadAgent:", error);
         throw error;
         }
     },
@@ -42,7 +42,7 @@ const foragentModel = {
         const result = await pool
             .request()
             .input("id", sql.Int, id)
-            .query("SELECT * FROM foragent WHERE id = @id");
+            .query("SELECT * FROM REMMstSaleLeadAgent WHERE id = @id");
         return result.recordset[0];
         } catch (error) {
         console.error("❌ Error fetching profile:", error);
@@ -64,7 +64,7 @@ const foragentModel = {
 
             .input("message", sql.NVarChar, profile.message)
             .query(`
-            INSERT INTO foragent (fullName, email, phone, licenseNumber, yearsExperience, brokerage, specialization, message)
+            INSERT INTO REMMstSaleLeadAgent (fullName, email, phone, licenseNumber, yearsExperience, brokerage, specialization, message)
             VALUES (@fullName, @email, @phone, @licenseNumber, @yearsExperience, @brokerage, @specialization, @message)
         `);
         return result;

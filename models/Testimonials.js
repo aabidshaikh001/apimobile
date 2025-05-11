@@ -7,9 +7,9 @@ const Testimonials = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Testimonials')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMTranUserTestimonial')
                 BEGIN
-                    CREATE TABLE Testimonials (
+                    CREATE TABLE REMTranUserTestimonial (
                       id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(100) NOT NULL,
     role NVARCHAR(100) NOT NULL,
@@ -22,16 +22,16 @@ const Testimonials = {
                 END;
             `;
             await pool.request().query(query);
-            console.log("Testimonials table created or already exists.");
+            console.log("REMTranUserTestimonial table created or already exists.");
         } catch (error) {
-            console.error("Error creating Testimonials table:", error);
+            console.error("Error creating REMTranUserTestimonial table:", error);
         }
     },
     createTestimonial: async (testimonial) => {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO Testimonials (name, role, content, rating, image_url)
+                INSERT INTO REMTranUserTestimonial (name, role, content, rating, image_url)
                 VALUES (@name, @role, @content, @rating, @image_url);
             `;
             await pool.request()
@@ -49,11 +49,11 @@ const Testimonials = {
     getAllTestimonials: async () => {
         try {
             const pool = await connectToDB();
-            const query = `SELECT * FROM Testimonials`;
+            const query = `SELECT * FROM REMTranUserTestimonial`;
             const result = await pool.request().query(query);
             return result.recordset;
         } catch (error) {
-            console.error("Error fetching all testimonials:", error);
+            console.error("Error fetching all REMTranUserTestimonial:", error);
         }
     }};
 module.exports = Testimonials;

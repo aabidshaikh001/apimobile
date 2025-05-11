@@ -9,8 +9,8 @@ class OTP {
       const pool = await connectToDB()
 
       await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='otps' AND xtype='U')
-        CREATE TABLE otps (
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='CSMTranBrokerVerification' AND xtype='U')
+        CREATE TABLE CSMTranBrokerVerification (
           id VARCHAR(36) PRIMARY KEY,
           email VARCHAR(255) NOT NULL,
           otp VARCHAR(6) NOT NULL,
@@ -41,13 +41,13 @@ class OTP {
       const expiresAt = new Date()
       expiresAt.setMinutes(expiresAt.getMinutes() + 15)
 
-      // Delete any existing OTPs for this email and purpose
+      // Delete any existing CSMTranBrokerVerification for this email and purpose
       await pool
         .request()
         .input("email", sql.VarChar, email)
         .input("purpose", sql.VarChar, purpose)
         .query(`
-          DELETE FROM otps 
+          DELETE FROM CSMTranBrokerVerification 
           WHERE email = @email AND purpose = @purpose
         `)
 
@@ -60,7 +60,7 @@ class OTP {
         .input("purpose", sql.VarChar, purpose)
         .input("expiresAt", sql.DateTime, expiresAt)
         .query(`
-          INSERT INTO otps (id, email, otp, purpose, expiresAt)
+          INSERT INTO CSMTranBrokerVerification (id, email, otp, purpose, expiresAt)
           VALUES (@id, @email, @otp, @purpose, @expiresAt)
         `)
 
@@ -84,7 +84,7 @@ class OTP {
         .input("purpose", sql.VarChar, purpose)
         .input("now", sql.DateTime, new Date())
         .query(`
-          SELECT * FROM otps
+          SELECT * FROM CSMTranBrokerVerification
           WHERE email = @email 
           AND otp = @otp 
           AND purpose = @purpose
@@ -102,7 +102,7 @@ class OTP {
         .input("otp", sql.VarChar, otp)
         .input("purpose", sql.VarChar, purpose)
         .query(`
-          DELETE FROM otps
+          DELETE FROM CSMTranBrokerVerification
           WHERE email = @email 
           AND otp = @otp 
           AND purpose = @purpose

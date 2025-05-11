@@ -8,9 +8,9 @@ const BuilderDetails = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBBuilderDetails')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstBuilder')
                 BEGIN
-                    CREATE TABLE MBBuilderDetails (
+                    CREATE TABLE REMMstBuilder (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL UNIQUE,
                         name NVARCHAR(255),
@@ -20,7 +20,7 @@ const BuilderDetails = {
                         experience NVARCHAR(MAX),
                         certifications NVARCHAR(MAX),
                         projects NVARCHAR(MAX), -- Storing JSON string
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -35,7 +35,7 @@ const BuilderDetails = {
         try {
             const pool = await connectToDB();
             const query = `
-                MERGE INTO MBBuilderDetails AS target
+                MERGE INTO REMMstBuilder AS target
                 USING (SELECT @propertyId AS propertyId) AS source
                 ON target.propertyId = source.propertyId
                 WHEN MATCHED THEN 
@@ -72,7 +72,7 @@ const BuilderDetails = {
     getBuilderDetailsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBBuilderDetails WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstBuilder WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -92,7 +92,7 @@ const BuilderDetails = {
     getAllBuilderDetails: async () => {
         try {
           const pool = await connectToDB();
-          const query = "SELECT * FROM MBBuilderDetails";
+          const query = "SELECT * FROM REMMstBuilder";
           const result = await pool.request().query(query);
       
           return result.recordset.map(builder => ({
@@ -108,7 +108,7 @@ const BuilderDetails = {
     deleteBuilderDetailsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBBuilderDetails WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstBuilder WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

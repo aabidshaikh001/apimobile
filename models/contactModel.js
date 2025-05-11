@@ -6,9 +6,9 @@ const ContactModel = {
         try {
             const pool = await connectToDB();
             await pool.request().query(`
-            IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'contacts')
+            IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'SUMTranTicket')
             BEGIN
-                CREATE TABLE contacts (
+                CREATE TABLE SUMTranTicket (
                     id INT IDENTITY(1,1) PRIMARY KEY,
     fullName NVARCHAR(255) NOT NULL,
     email NVARCHAR(255) NOT NULL,
@@ -30,10 +30,10 @@ const ContactModel = {
         }
     },
 
-    // Get All Contacts
+    // Get All SUMTranTicket
     getAll: async () => {
         const pool = await connectToDB();
-        const result = await pool.request().query("SELECT * FROM contacts");
+        const result = await pool.request().query("SELECT * FROM SUMTranTicket");
         return result.recordset;
     },
     create: async (contactData) => {
@@ -52,7 +52,7 @@ const ContactModel = {
             .input("availability", sql.NVarChar, availability)
             .input("message", sql.Text, message)
             .query(`
-            INSERT INTO contacts (fullName, email, personalNumber, whatsappNumber, inquiryType, propertyType, propertyStatus, furnishing, availability, message)
+            INSERT INTO SUMTranTicket (fullName, email, personalNumber, whatsappNumber, inquiryType, propertyType, propertyStatus, furnishing, availability, message)
             OUTPUT INSERTED.id
             VALUES (@fullName, @email, @personalNumber, @whatsappNumber, @inquiryType, @propertyType, @propertyStatus, @furnishing, @availability, @message)
         `);

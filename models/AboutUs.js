@@ -6,8 +6,8 @@ const AboutUs = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='AboutUs' AND xtype='U')
-                CREATE TABLE AboutUs (
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='REMWEBPageAbout' AND xtype='U')
+                CREATE TABLE REMWEBPageAbout (
                     Id INT PRIMARY KEY IDENTITY(1,1),
                     CoreValues NVARCHAR(MAX),
                     WhyChooseUs NVARCHAR(MAX),
@@ -17,9 +17,9 @@ const AboutUs = {
                 )
             `;
             await pool.request().query(query);
-            console.log("AboutUs table created or already exists");
+            console.log("REMWEBPageAbout table created or already exists");
         } catch (error) {
-            console.error("Error creating AboutUs table:", error);
+            console.error("Error creating REMWEBPageAbout table:", error);
             throw error;
         }
     },
@@ -29,12 +29,12 @@ const AboutUs = {
             const pool = await connectToDB();
             const result = await pool.request().query(`
                 SELECT TOP 1 CoreValues, WhyChooseUs, GrowthMetrics, OurStory 
-                FROM AboutUs 
+                FROM REMWEBPageAbout 
                 ORDER BY LastUpdated DESC
             `);
             return result.recordset[0] || null;
         } catch (error) {
-            console.error("Error fetching AboutUs data:", error);
+            console.error("Error fetching REMWEBPageAbout data:", error);
             throw error;
         }
     },
@@ -48,12 +48,12 @@ const AboutUs = {
                 .input("GrowthMetrics", sql.NVarChar(sql.MAX), JSON.stringify(data.growthMetrics))
                 .input("OurStory", sql.NVarChar(sql.MAX), JSON.stringify(data.ourStory))
                 .query(`
-                    INSERT INTO AboutUs (CoreValues, WhyChooseUs, GrowthMetrics, OurStory) 
+                    INSERT INTO REMWEBPageAbout (CoreValues, WhyChooseUs, GrowthMetrics, OurStory) 
                     VALUES (@CoreValues, @WhyChooseUs, @GrowthMetrics, @OurStory)
                 `);
             return result;
         } catch (error) {
-            console.error("Error inserting AboutUs data:", error);
+            console.error("Error inserting REMWEBPageAbout data:", error);
             throw error;
         }
     },
@@ -67,7 +67,7 @@ const AboutUs = {
                 .input("GrowthMetrics", sql.NVarChar(sql.MAX), data.GrowthMetrics)
                 .input("OurStory", sql.NVarChar(sql.MAX), data.OurStory)
                 .query(`
-                    UPDATE AboutUs 
+                    UPDATE REMWEBPageAbout 
                     SET CoreValues = @CoreValues, 
                         WhyChooseUs = @WhyChooseUs, 
                         GrowthMetrics = @GrowthMetrics, 
@@ -77,7 +77,7 @@ const AboutUs = {
                 `);
             return result;
         } catch (error) {
-            console.error("Error updating AboutUs data:", error);
+            console.error("Error updating REMWEBPageAbout data:", error);
             throw error;
         }
     },
@@ -85,11 +85,11 @@ const AboutUs = {
         try {
             const pool = await connectToDB();
             const result = await pool.request().query(`
-                DELETE FROM AboutUs
+                DELETE FROM REMWEBPageAbout
             `);
             return result;
         } catch (error) {
-            console.error("Error deleting AboutUs data:", error);
+            console.error("Error deleting REMWEBPageAbout data:", error);
             throw error;
         }
     }

@@ -6,9 +6,9 @@ const FloorPlan = {
     try {
       const pool = await connectToDB();
       const query = `
-        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBFloorPlan')
+        IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropFloorPlan')
         BEGIN
-          CREATE TABLE MBFloorPlan (
+          CREATE TABLE REMMstPropFloorPlan (
             id INT IDENTITY(1,1) PRIMARY KEY,
             propertyId VARCHAR(50) NOT NULL,
             name NVARCHAR(255),
@@ -16,14 +16,14 @@ const FloorPlan = {
             area NVARCHAR(50),
             bedrooms INT,
             bathrooms INT,
-            FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+            FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
           );
         END;
       `;
       await pool.request().query(query);
-      console.log("MBFloorPlan table created or already exists.");
+      console.log("REMMstPropFloorPlan table created or already exists.");
     } catch (error) {
-      console.error("Error creating MBFloorPlan table:", error);
+      console.error("Error creating REMMstPropFloorPlan table:", error);
     }
   },
 
@@ -31,7 +31,7 @@ const FloorPlan = {
     try {
       const pool = await connectToDB();
       const query = `
-        INSERT INTO MBFloorPlan (propertyId, name, image, area, bedrooms, bathrooms)
+        INSERT INTO REMMstPropFloorPlan (propertyId, name, image, area, bedrooms, bathrooms)
         VALUES (@propertyId, @name, @image, @area, @bedrooms, @bathrooms);
       `;
       await pool.request()
@@ -50,7 +50,7 @@ const FloorPlan = {
   getFloorPlansByPropertyId: async (propertyId) => {
     try {
       const pool = await connectToDB();
-      const query = `SELECT * FROM MBFloorPlan WHERE propertyId = @propertyId`;
+      const query = `SELECT * FROM REMMstPropFloorPlan WHERE propertyId = @propertyId`;
       const result = await pool.request()
         .input("propertyId", sql.VarChar(50), propertyId)
         .query(query);
@@ -64,7 +64,7 @@ const FloorPlan = {
   deleteFloorPlansByPropertyId: async (propertyId) => {
     try {
       const pool = await connectToDB();
-      const query = `DELETE FROM MBFloorPlan WHERE propertyId = @propertyId`;
+      const query = `DELETE FROM REMMstPropFloorPlan WHERE propertyId = @propertyId`;
       await pool.request()
         .input("propertyId", sql.VarChar(50), propertyId)
         .query(query);

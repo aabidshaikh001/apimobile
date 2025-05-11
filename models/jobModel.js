@@ -5,8 +5,8 @@ const JobModel = {
   // Ensure table exists
   async createTable() {
     const query = `
-      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='job_vacancies' AND xtype='U')
-      CREATE TABLE job_vacancies (
+      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='EEMMstJD' AND xtype='U')
+      CREATE TABLE EEMMstJD (
         id INT IDENTITY(1,1) PRIMARY KEY,
         title NVARCHAR(255) NOT NULL,
         department NVARCHAR(255) NOT NULL,
@@ -20,14 +20,14 @@ const JobModel = {
     `;
     const pool = await connectToDB();
     await pool.request().query(query);
-    console.log("✅ job_vacancies table ensured.");
+    console.log("✅ EEMMstJD table ensured.");
   },
 
   // Create a new job
   async createJob(jobData) {
     const { title, department, location, type, description, responsibilities, requirements, benefits } = jobData;
     const query = `
-      INSERT INTO job_vacancies (title, department, location, type, description, responsibilities, requirements, benefits)
+      INSERT INTO EEMMstJD (title, department, location, type, description, responsibilities, requirements, benefits)
       OUTPUT INSERTED.*
       VALUES (@title, @department, @location, @type, @description, @responsibilities, @requirements, @benefits)
     `;
@@ -50,7 +50,7 @@ const JobModel = {
   // Get all jobs
   async getAllJobs() {
     const pool = await connectToDB();
-    const result = await pool.request().query("SELECT * FROM job_vacancies");
+    const result = await pool.request().query("SELECT * FROM EEMMstJD");
     return result.recordset;
   },
 
@@ -59,7 +59,7 @@ const JobModel = {
     const pool = await connectToDB();
     const result = await pool.request()
       .input("id", sql.Int, id)
-      .query("SELECT * FROM job_vacancies WHERE id = @id");
+      .query("SELECT * FROM EEMMstJD WHERE id = @id");
 
     return result.recordset[0];
   },
@@ -69,7 +69,7 @@ const JobModel = {
     const pool = await connectToDB();
     await pool.request()
       .input("id", sql.Int, id)
-      .query("DELETE FROM job_vacancies WHERE id = @id");
+      .query("DELETE FROM EEMMstJD WHERE id = @id");
 
     return { message: "Job deleted successfully" };
   }

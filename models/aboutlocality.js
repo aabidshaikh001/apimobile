@@ -14,7 +14,7 @@ const AboutLocality = {
           localityDescription NVARCHAR(MAX),
           localityFeatureName NVARCHAR(MAX),
           localityFeatureDistance NVARCHAR(MAX),
-            FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+            FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
         )
       `);
       console.log("✅ Locality table ensured.");

@@ -7,15 +7,15 @@ const Milestone = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBMilestone')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'CSMMstBrokerMilestone')
                 BEGIN
-                    CREATE TABLE MBMilestone (
+                    CREATE TABLE CSMMstBrokerMilestone (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL,
                         name NVARCHAR(255),
                         condition NVARCHAR(50),
                         brokerage NVARCHAR(50),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -30,7 +30,7 @@ const Milestone = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBMilestone (propertyId, name, condition, brokerage)
+                INSERT INTO CSMMstBrokerMilestone (propertyId, name, condition, brokerage)
                 VALUES (@propertyId, @name, @condition, @brokerage);
             `;
             await pool.request()
@@ -48,7 +48,7 @@ const Milestone = {
     getMilestonesByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBMilestone WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM CSMMstBrokerMilestone WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -62,7 +62,7 @@ const Milestone = {
     deleteMilestoneById: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBMilestone WHERE id = @id";
+            const query = "DELETE FROM CSMMstBrokerMilestone WHERE id = @id";
             await pool.request()
                 .input("id", sql.Int, id)
                 .query(query);
@@ -75,7 +75,7 @@ const Milestone = {
     deleteMilestonesByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBMilestone WHERE propertyId = @propertyId";
+            const query = "DELETE FROM CSMMstBrokerMilestone WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

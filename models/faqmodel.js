@@ -6,17 +6,17 @@ const Faqmodel = {
         try {
             const pool = await connectToDB();
             await pool.request().query(`
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'FAQ')
-                CREATE TABLE FAQ (
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMWEBTranFAQ')
+                CREATE TABLE REMWEBTranFAQ (
                     id INT PRIMARY KEY IDENTITY(1,1),
                     category NVARCHAR(255) NOT NULL,
                     question NVARCHAR(MAX) NOT NULL,
                     answer NVARCHAR(MAX) NOT NULL
                 )
             `);
-            console.log("✅ FAQ table ensured.");
+            console.log("✅ REMWEBTranFAQ table ensured.");
         } catch (error) {
-            console.error("❌ Error creating FAQ table:", error);
+            console.error("❌ Error creating REMWEBTranFAQ table:", error);
         }
     },
 
@@ -29,22 +29,22 @@ const Faqmodel = {
             for (const categoryData of faqData) {
                 const { category, items } = categoryData;
                 
-                // Insert each FAQ item under its category
+                // Insert each REMWEBTranFAQ item under its category
                 for (const { question, answer } of items) {
                     await pool.request()
                         .input("category", sql.NVarChar(255), category)
                         .input("question", sql.NVarChar(sql.MAX), question)
                         .input("answer", sql.NVarChar(sql.MAX), answer)
                         .query(`
-                            INSERT INTO FAQ (category, question, answer)
+                            INSERT INTO REMWEBTranFAQ (category, question, answer)
                             VALUES (@category, @question, @answer)
                         `);
-                    console.log(`✅ FAQ entry added under ${category}`);
+                    console.log(`✅ REMWEBTranFAQ entry added under ${category}`);
                 }
             }
 
         } catch (error) {
-            console.error("❌ Error creating FAQ entries:", error);
+            console.error("❌ Error creating REMWEBTranFAQ entries:", error);
         }
     },
 
@@ -52,7 +52,7 @@ const Faqmodel = {
     getAll: async () => {
         try {
             const pool = await connectToDB();
-            const result = await pool.request().query("SELECT * FROM FAQ");
+            const result = await pool.request().query("SELECT * FROM REMWEBTranFAQ");
             const faqs = result.recordset;
 
             // Grouping the FAQs by category
@@ -72,7 +72,7 @@ const Faqmodel = {
             return faqData;
 
         } catch (error) {
-            console.error("❌ Error fetching all FAQ entries:", error);
+            console.error("❌ Error fetching all REMWEBTranFAQ entries:", error);
         }
     },
 
@@ -81,10 +81,10 @@ const Faqmodel = {
             const pool = await connectToDB();
             await pool.request()
                 .input("id", sql.Int, id)
-                .query("DELETE FROM FAQ WHERE id = @id");
-            console.log("✅ FAQ entry deleted.");
+                .query("DELETE FROM REMWEBTranFAQ WHERE id = @id");
+            console.log("✅ REMWEBTranFAQ entry deleted.");
         } catch (error) {
-            console.error("❌ Error deleting FAQ entry:", error);
+            console.error("❌ Error deleting REMWEBTranFAQ entry:", error);
         }
     }
 };

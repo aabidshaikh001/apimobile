@@ -5,9 +5,9 @@ const HomeInteriorModel = {
         try {
             const pool = await connectToDB();
             await pool.request().query(`
-                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'homeInterior')
+                IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'RESHITranLeads')
                 BEGIN
-                    CREATE TABLE homeInterior (
+                    CREATE TABLE RESHITranLeads (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         name NVARCHAR(255) NOT NULL,
                         email NVARCHAR(255) NOT NULL,
@@ -26,7 +26,7 @@ const HomeInteriorModel = {
     getAll: async () => {
         try {
             const pool = await connectToDB();
-            const result = await pool.request().query("SELECT * FROM homeInterior");
+            const result = await pool.request().query("SELECT * FROM RESHITranLeads");
             return result.recordset;
         } catch (err) {
             console.error("❌ Error fetching records:", err.message);
@@ -48,7 +48,7 @@ const HomeInteriorModel = {
                 .input("service", sql.NVarChar, service)
                 .input("message", sql.NVarChar(sql.MAX), message)
                 .query(`
-                    INSERT INTO homeInterior (name, email, phone, service, message)
+                    INSERT INTO RESHITranLeads (name, email, phone, service, message)
                     VALUES (@name, @email, @phone, @service, @message);
                 `);
             return result.rowsAffected;

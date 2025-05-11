@@ -4,8 +4,8 @@ const connectToDB = require("../config/db");
 const JobformModel = {
     async createTable() {
         const query = `
-          IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='JobApplications' AND xtype='U')
-          CREATE TABLE JobApplications (
+          IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='EEMTranJobApp' AND xtype='U')
+          CREATE TABLE EEMTranJobApp (
             id INT IDENTITY(1,1) PRIMARY KEY,
             name NVARCHAR(255) NOT NULL,
             email NVARCHAR(255) NOT NULL UNIQUE,
@@ -18,7 +18,7 @@ const JobformModel = {
         `;
         const pool = await connectToDB();
         await pool.request().query(query);
-        console.log("✅ JobApplications table ensured.");
+        console.log("✅ EEMTranJobApp table ensured.");
       },
   async createJobApplication(data) {
     const { name, email, phone, resumeUrl, coverLetter, jobTitle } = data;
@@ -33,7 +33,7 @@ const JobformModel = {
         .input("coverLetter", sql.NVarChar, coverLetter)
         .input("jobTitle", sql.NVarChar, jobTitle)
         .query(
-          "INSERT INTO JobApplications (name, email, phone, resume, coverLetter, jobTitle) VALUES (@name, @email, @phone, @resumeUrl, @coverLetter, @jobTitle)"
+          "INSERT INTO EEMTranJobApp (name, email, phone, resume, coverLetter, jobTitle) VALUES (@name, @email, @phone, @resumeUrl, @coverLetter, @jobTitle)"
         );
       console.log("Application inserted successfully!");
       return { message: "Application submitted successfully" };
@@ -43,7 +43,7 @@ const JobformModel = {
     }
   },  async getAllJobApplications() {
         const pool = await connectToDB();
-        const result = await pool.request().query("SELECT * FROM JobApplications");
+        const result = await pool.request().query("SELECT * FROM EEMTranJobApp");
         return result.recordset;
       }
 };

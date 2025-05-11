@@ -8,18 +8,18 @@ const Yotubevideo = {
       const pool = await connectToDB();
       await pool.request().query(`
         IF NOT EXISTS (
-          SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Yotubevideo'
+          SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropVideo'
         )
-        CREATE TABLE Yotubevideo (
+        CREATE TABLE REMMstPropVideo (
           id INT PRIMARY KEY IDENTITY(1,1),
           propertyId VARCHAR(50) NOT NULL UNIQUE,
           video NVARCHAR(MAX),
-          FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
         )
       `);
-      console.log("✅ Yotubevideo table created or already exists.");
+      console.log("✅ REMMstPropVideo table created or already exists.");
     } catch (error) {
-      console.error("❌ Error creating Yotubevideo table:", error);
+      console.error("❌ Error creating REMMstPropVideo table:", error);
     }
   },
 
@@ -29,7 +29,7 @@ const Yotubevideo = {
     const result = await pool
       .request()
       .input("propertyId", sql.VarChar(50), propertyId)
-      .query("SELECT video FROM Yotubevideo WHERE propertyId = @propertyId");
+      .query("SELECT video FROM REMMstPropVideo WHERE propertyId = @propertyId");
     return result.recordset[0];
   },
 
@@ -39,20 +39,20 @@ const Yotubevideo = {
     const check = await pool
       .request()
       .input("propertyId", sql.VarChar(50), propertyId)
-      .query("SELECT COUNT(*) AS count FROM Yotubevideo WHERE propertyId = @propertyId");
+      .query("SELECT COUNT(*) AS count FROM REMMstPropVideo WHERE propertyId = @propertyId");
 
     if (check.recordset[0].count > 0) {
       await pool
         .request()
         .input("propertyId", sql.VarChar(50), propertyId)
         .input("video", sql.NVarChar(sql.MAX), video)
-        .query("UPDATE Yotubevideo SET video = @video WHERE propertyId = @propertyId");
+        .query("UPDATE REMMstPropVideo SET video = @video WHERE propertyId = @propertyId");
     } else {
       await pool
         .request()
         .input("propertyId", sql.VarChar(50), propertyId)
         .input("video", sql.NVarChar(sql.MAX), video)
-        .query("INSERT INTO Yotubevideo (propertyId, video) VALUES (@propertyId, @video)");
+        .query("INSERT INTO REMMstPropVideo (propertyId, video) VALUES (@propertyId, @video)");
     }
   },
 
@@ -62,7 +62,7 @@ const Yotubevideo = {
     await pool
       .request()
       .input("propertyId", sql.VarChar(50), propertyId)
-      .query("DELETE FROM Yotubevideo WHERE propertyId = @propertyId");
+      .query("DELETE FROM REMMstPropVideo WHERE propertyId = @propertyId");
   },
 };
 

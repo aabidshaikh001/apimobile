@@ -7,9 +7,9 @@ const Bookings = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBBookings')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'LDMTranVisit')
                 BEGIN
-                    CREATE TABLE MBBookings (
+                    CREATE TABLE LDMTranVisit (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         bookingId AS 'BK-' + CAST(id AS VARCHAR(10)) PERSISTED,
                         propertyId VARCHAR(50) NULL,
@@ -26,8 +26,8 @@ const Bookings = {
                         createdAt DATETIME DEFAULT GETDATE(),
                         updatedAt DATETIME DEFAULT GETDATE()
                     );
-                    CREATE INDEX idx_bookings_email ON MBBookings(email);
-                    CREATE INDEX idx_bookings_date ON MBBookings(bookingDate);
+                    CREATE INDEX idx_bookings_email ON LDMTranVisit(email);
+                    CREATE INDEX idx_bookings_date ON LDMTranVisit(bookingDate);
                 END;
             `;
             await pool.request().query(query);
@@ -41,7 +41,7 @@ const Bookings = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBBookings (
+                INSERT INTO LDMTranVisit (
                     propertyId, propertyName, clientName, phoneNumber, email,
                     requirement, priceRange, bookingDate, timeSlot, country
                 )
@@ -49,7 +49,7 @@ const Bookings = {
                     @propertyId, @propertyName, @clientName, @phoneNumber, @email,
                     @requirement, @priceRange, @bookingDate, @timeSlot, @country
                 );
-                SELECT bookingId FROM MBBookings WHERE id = SCOPE_IDENTITY();
+                SELECT bookingId FROM LDMTranVisit WHERE id = SCOPE_IDENTITY();
             `;
 
             const result = await pool.request()
@@ -78,7 +78,7 @@ const Bookings = {
     getBookingById: async (bookingId) => {
         try {
             const pool = await connectToDB();
-            const query = `SELECT * FROM MBBookings WHERE bookingId = @bookingId`;
+            const query = `SELECT * FROM LDMTranVisit WHERE bookingId = @bookingId`;
             const result = await pool.request()
                 .input("bookingId", sql.VarChar(50), bookingId)
                 .query(query);
@@ -94,8 +94,8 @@ const Bookings = {
         try {
             const pool = await connectToDB();
             const query = propertyId
-                ? `SELECT * FROM MBBookings WHERE propertyId = @propertyId ORDER BY bookingDate DESC`
-                : `SELECT * FROM MBBookings ORDER BY bookingDate DESC`;
+                ? `SELECT * FROM LDMTranVisit WHERE propertyId = @propertyId ORDER BY bookingDate DESC`
+                : `SELECT * FROM LDMTranVisit ORDER BY bookingDate DESC`;
             
             const request = pool.request();
             if (propertyId) {
@@ -114,7 +114,7 @@ const Bookings = {
         try {
             const pool = await connectToDB();
             const query = `
-                UPDATE MBBookings
+                UPDATE LDMTranVisit
                 SET bookingStatus = @status,
                     updatedAt = GETDATE()
                 WHERE bookingId = @bookingId
@@ -135,7 +135,7 @@ const Bookings = {
     deleteBooking: async (bookingId) => {
         try {
             const pool = await connectToDB();
-            const query = `DELETE FROM MBBookings WHERE bookingId = @bookingId`;
+            const query = `DELETE FROM LDMTranVisit WHERE bookingId = @bookingId`;
             await pool.request()
                 .input("bookingId", sql.VarChar(50), bookingId)
                 .query(query);
@@ -153,7 +153,7 @@ const Bookings = {
         try {
             console.log("🔍 Querying database for all bookings...");
     
-            const query = `SELECT * FROM MBBookings`;
+            const query = `SELECT * FROM LDMTranVisit`;
             const result = await pool.request().query(query);
     
             console.log("📌 Query result:", result.recordset);

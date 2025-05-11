@@ -13,7 +13,7 @@ const AboutProperty = {
                         id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL,
                         description NVARCHAR(MAX),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;

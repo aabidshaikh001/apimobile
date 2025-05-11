@@ -5,9 +5,9 @@ const forownerModel = {
         try {
         const pool = await connectToDB();
         await pool.request().query(`
-            IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'forowner')
+            IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstSaleLeadOwner')
             BEGIN
-            CREATE TABLE forowner (
+            CREATE TABLE REMMstSaleLeadOwner (
                 id INT IDENTITY(1,1) PRIMARY KEY,
                name NVARCHAR(255) NOT NULL,
                email NVARCHAR(255) NOT NULL UNIQUE,
@@ -20,7 +20,7 @@ const forownerModel = {
              
             END
         `);
-        console.log("✅ forowner table initialized.");
+        console.log("✅ REMMstSaleLeadOwner table initialized.");
         } catch (error) {
         console.error("❌ Error initializing table:", error);
         }
@@ -28,10 +28,10 @@ const forownerModel = {
     getAllProfiles: async () => {
         try {
         const pool = await connectToDB();
-        const result = await pool.request().query("SELECT * FROM forowner");
+        const result = await pool.request().query("SELECT * FROM REMMstSaleLeadOwner");
         return result.recordset;
         } catch (error) {
-        console.error("❌ Error fetching forowner:", error);
+        console.error("❌ Error fetching REMMstSaleLeadOwner:", error);
         throw error;
         }
     },
@@ -41,7 +41,7 @@ const forownerModel = {
         const result = await pool
             .request()
             .input("id", sql.Int, id)
-            .query("SELECT * FROM forowner WHERE id = @id");
+            .query("SELECT * FROM REMMstSaleLeadOwner WHERE id = @id");
         return result.recordset[0];
         } catch (error) {
         console.error("❌ Error fetching profile:", error);
@@ -61,7 +61,7 @@ const forownerModel = {
             .input("expectedPrice", sql.NVarChar, profile.expectedPrice)
             .input("message", sql.NVarChar, profile.message)
             .query(`
-            INSERT INTO forowner (name, email, phone, propertyType, propertyLocation, expectedPrice, message)
+            INSERT INTO REMMstSaleLeadOwner (name, email, phone, propertyType, propertyLocation, expectedPrice, message)
             VALUES (@name, @email, @phone, @propertyType, @propertyLocation, @expectedPrice, @message)
             `);
         return result;

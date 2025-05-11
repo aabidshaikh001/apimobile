@@ -11,9 +11,9 @@ const PartnerSection = {
 
       await pool.request().query(`
         IF NOT EXISTS (
-          SELECT * FROM sysobjects WHERE name='PartnerSection' AND xtype='U'
+          SELECT * FROM sysobjects WHERE name='REMWEBPageBA' AND xtype='U'
         )
-        CREATE TABLE PartnerSection (
+        CREATE TABLE REMWEBPageBA (
           id INT PRIMARY KEY IDENTITY(1,1),
           title NVARCHAR(200),
           description NVARCHAR(1000),
@@ -25,11 +25,11 @@ const PartnerSection = {
 
       await pool.request().query(`
         IF NOT EXISTS (
-          SELECT * FROM sysobjects WHERE name='PartnerSectionCards' AND xtype='U'
+          SELECT * FROM sysobjects WHERE name='REMWEBPageBACards' AND xtype='U'
         )
-        CREATE TABLE PartnerSectionCards (
+        CREATE TABLE REMWEBPageBACards (
           id INT PRIMARY KEY IDENTITY(1,1),
-          partnerSectionId INT FOREIGN KEY REFERENCES PartnerSection(id) ON DELETE CASCADE,
+          partnerSectionId INT FOREIGN KEY REFERENCES REMWEBPageBA(id) ON DELETE CASCADE,
           title NVARCHAR(200),
           description NVARCHAR(500),
           iconType NVARCHAR(50),
@@ -39,7 +39,7 @@ const PartnerSection = {
         );
       `);
 
-      console.log("✅ PartnerSection and PartnerSectionCards tables are ready.");
+      console.log("✅ REMWEBPageBA and REMWEBPageBACards tables are ready.");
     } catch (error) {
       console.error("❌ Error creating tables:", error);
       throw new Error("Failed to create tables");
@@ -54,7 +54,7 @@ const PartnerSection = {
           id,
           title,
           description
-        FROM PartnerSection
+        FROM REMWEBPageBA
         WHERE isActive = 1
         ORDER BY updatedAt DESC
       `);
@@ -70,7 +70,7 @@ const PartnerSection = {
               title,
               description,
               iconType
-            FROM PartnerSectionCards
+            FROM REMWEBPageBACards
             WHERE partnerSectionId = @partnerSectionId
             ORDER BY displayOrder
           `);
@@ -93,7 +93,7 @@ const PartnerSection = {
 
       try {
         await transaction.request().query(`
-          UPDATE PartnerSection
+          UPDATE REMWEBPageBA
           SET isActive = 0
           WHERE isActive = 1
         `);
@@ -102,7 +102,7 @@ const PartnerSection = {
           .input("title", sql.NVarChar(200), partnerSection.title)
           .input("description", sql.NVarChar(1000), partnerSection.description)
           .query(`
-            INSERT INTO PartnerSection (title, description, isActive, createdAt, updatedAt)
+            INSERT INTO REMWEBPageBA (title, description, isActive, createdAt, updatedAt)
             OUTPUT INSERTED.id, INSERTED.title, INSERTED.description
             VALUES (@title, @description, 1, GETDATE(), GETDATE())
           `);
@@ -119,7 +119,7 @@ const PartnerSection = {
               .input("iconType", sql.NVarChar(50), card.iconType || "FaHandshake")
               .input("displayOrder", sql.Int, i + 1)
               .query(`
-                INSERT INTO PartnerSectionCards 
+                INSERT INTO REMWEBPageBACards 
                 (partnerSectionId, title, description, iconType, displayOrder, createdAt, updatedAt)
                 VALUES (@partnerSectionId, @title, @description, @iconType, @displayOrder, GETDATE(), GETDATE())
               `);
@@ -150,7 +150,7 @@ const PartnerSection = {
           .input("title", sql.NVarChar(200), partnerSection.title)
           .input("description", sql.NVarChar(1000), partnerSection.description)
           .query(`
-            UPDATE PartnerSection
+            UPDATE REMWEBPageBA
             SET title = @title, description = @description, updatedAt = GETDATE()
             WHERE id = @id
           `);
@@ -158,7 +158,7 @@ const PartnerSection = {
         await transaction.request()
           .input("partnerSectionId", sql.Int, id)
           .query(`
-            DELETE FROM PartnerSectionCards
+            DELETE FROM REMWEBPageBACards
             WHERE partnerSectionId = @partnerSectionId
           `);
 
@@ -172,7 +172,7 @@ const PartnerSection = {
               .input("iconType", sql.NVarChar(50), card.iconType || "FaHandshake")
               .input("displayOrder", sql.Int, i + 1)
               .query(`
-                INSERT INTO PartnerSectionCards 
+                INSERT INTO REMWEBPageBACards 
                 (partnerSectionId, title, description, iconType, displayOrder, createdAt, updatedAt)
                 VALUES (@partnerSectionId, @title, @description, @iconType, @displayOrder, GETDATE(), GETDATE())
               `);
@@ -201,14 +201,14 @@ const PartnerSection = {
         await transaction.request()
           .input("partnerSectionId", sql.Int, id)
           .query(`
-            DELETE FROM PartnerSectionCards
+            DELETE FROM REMWEBPageBACards
             WHERE partnerSectionId = @partnerSectionId
           `);
 
         await transaction.request()
           .input("id", sql.Int, id)
           .query(`
-            DELETE FROM PartnerSection
+            DELETE FROM REMWEBPageBA
             WHERE id = @id
           `);
 

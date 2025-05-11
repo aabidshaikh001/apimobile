@@ -6,14 +6,14 @@ const BankInfo = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBBankInfo')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropBankLoan')
                 BEGIN
-                    CREATE TABLE MBBankInfo (
+                    CREATE TABLE REMMstPropBankLoan (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL,
                         name NVARCHAR(255),
                         logo NVARCHAR(255),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -29,7 +29,7 @@ const BankInfo = {
             const pool = await connectToDB();
             
             // Check if bank info already exists for this propertyId
-            const checkQuery = "SELECT * FROM MBBankInfo WHERE propertyId = @propertyId";
+            const checkQuery = "SELECT * FROM REMMstPropBankLoan WHERE propertyId = @propertyId";
             const existingRecord = await pool.request()
                 .input("propertyId", sql.VarChar(50), bankInfo.propertyId)
                 .query(checkQuery);
@@ -42,7 +42,7 @@ const BankInfo = {
             
             // Insert new bank info if it does not exist
             const insertQuery = `
-                INSERT INTO MBBankInfo (propertyId, name, logo)
+                INSERT INTO REMMstPropBankLoan (propertyId, name, logo)
                 VALUES (@propertyId, @name, @logo)
             `;
             await pool.request()
@@ -62,7 +62,7 @@ const BankInfo = {
     getBankInfoByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBBankInfo WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstPropBankLoan WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -76,7 +76,7 @@ const BankInfo = {
     deleteBankInfoByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBBankInfo WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstPropBankLoan WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

@@ -18,7 +18,7 @@ const HomeInsuranceModel = {
                 .input("propertyType", sql.NVarChar, propertyType)
                 .input("message", sql.NVarChar(sql.MAX), message)
                 .query(`
-                    INSERT INTO homeInsurance (name, email, phone, propertyType, message)
+                    INSERT INTO RESINSTranLeads (name, email, phone, propertyType, message)
                     VALUES (@name, @email, @phone, @propertyType, @message);
                 `);
             return result.rowsAffected;
@@ -33,7 +33,7 @@ const HomeInsuranceModel = {
             const result = await pool
                 .request()
                 .query(`
-                    CREATE TABLE homeInsurance (
+                    CREATE TABLE RESINSTranLeads (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         name NVARCHAR(255) NOT NULL,
                         email NVARCHAR(255) NOT NULL,
@@ -51,7 +51,7 @@ const HomeInsuranceModel = {
     getAll: async () => {
         try {
             const pool = await connectToDB();
-            const result = await pool.request().query("SELECT * FROM homeInsurance");
+            const result = await pool.request().query("SELECT * FROM RESINSTranLeads");
             return result.recordset;
         } catch (err) {
             console.error("❌ Error fetching records:", err.message);

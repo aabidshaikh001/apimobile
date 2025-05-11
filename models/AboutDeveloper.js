@@ -15,7 +15,7 @@ const AboutDeveloper = {
           developerDescription NVARCHAR(MAX),
           developerAwards NVARCHAR(MAX),
           developerImage NVARCHAR(255),
-          FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
         );
       `);
       console.log("✅ AboutDeveloper table ensured.");

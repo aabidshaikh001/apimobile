@@ -5,22 +5,22 @@ const rentCategory = {
     try {
       const pool = await connectToDB();
       await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='RentCategories' AND xtype='U')
-        CREATE TABLE RentCategories (
+        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='REMMstPropCatRent' AND xtype='U')
+        CREATE TABLE REMMstPropCatRent (
           id INT IDENTITY(1,1) PRIMARY KEY,
           heading NVARCHAR(255) NOT NULL,
           items NVARCHAR(MAX) NOT NULL
         )
       `);
-      console.log("✅ RentCategories table ensured");
+      console.log("✅ REMMstPropCatRent table ensured");
     } catch (err) {
-      console.error("❌ Error creating RentCategories table:", err);
+      console.error("❌ Error creating REMMstPropCatRent table:", err);
     }
   },
 
   getAll: async () => {
     const pool = await connectToDB();
-    const result = await pool.request().query("SELECT * FROM RentCategories");
+    const result = await pool.request().query("SELECT * FROM REMMstPropCatRent");
     return result.recordset.map(row => ({
       id: row.id,
       heading: row.heading,
@@ -34,7 +34,7 @@ const rentCategory = {
       .request()
       .input("heading", heading)
       .input("items", JSON.stringify(items))
-      .query("INSERT INTO RentCategories (heading, items) VALUES (@heading, @items)");
+      .query("INSERT INTO REMMstPropCatRent (heading, items) VALUES (@heading, @items)");
   },
 };
 

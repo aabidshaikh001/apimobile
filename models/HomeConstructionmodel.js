@@ -16,7 +16,7 @@ const HomeConstructionModel = {
                 .input("service", sql.NVarChar, service)
                 .input("message", sql.NVarChar(sql.MAX), message)
                 .query(`
-                    INSERT INTO homeConstruction (name, email, phone, service, message)
+                    INSERT INTO RESHCTranLeads (name, email, phone, service, message)
                     VALUES (@name, @email, @phone, @service, @message);
                 `);
             return result.rowsAffected;
@@ -31,7 +31,7 @@ const HomeConstructionModel = {
             const result = await pool
                 .request()
                 .query(`
-                    CREATE TABLE homeConstruction (
+                    CREATE TABLE RESHCTranLeads (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         name NVARCHAR(255) NOT NULL,
                         email NVARCHAR(255) NOT NULL,
@@ -49,7 +49,7 @@ const HomeConstructionModel = {
     getAll: async () => {
         try {
             const pool = await connectToDB();
-            const result = await pool.request().query("SELECT * FROM homeConstruction");
+            const result = await pool.request().query("SELECT * FROM RESHCTranLeads");
             return result.recordset;
         } catch (err) {
             console.error("❌ Error fetching records:", err.message);

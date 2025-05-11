@@ -7,9 +7,9 @@ const customermodel = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBCustomer')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'CSMTranCustomer')
                 BEGIN
-                    CREATE TABLE MBCustomer (
+                    CREATE TABLE CSMTranCustomer (
                          id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
     email NVARCHAR(255) UNIQUE NOT NULL,
@@ -33,7 +33,7 @@ const customermodel = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBCustomer (name, email, phone, address, customerType, notes, contactPreference, createdBy)
+                INSERT INTO CSMTranCustomer (name, email, phone, address, customerType, notes, contactPreference, createdBy)
                 VALUES (@name, @email, @phone, @address, @customerType, @notes, @contactPreference, @createdBy);
             `;
             await pool.request()
@@ -54,7 +54,7 @@ const customermodel = {
     getAllCustomers: async () => {
         try {
             const pool = await connectToDB();
-            const query = `SELECT * FROM MBCustomer`;
+            const query = `SELECT * FROM CSMTranCustomer`;
             const result = await pool.request().query(query);
             return result.recordset;
         } catch (error) {
@@ -65,7 +65,7 @@ const customermodel = {
     getCustomerById: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = `SELECT * FROM MBCustomer WHERE id = @id`;
+            const query = `SELECT * FROM CSMTranCustomer WHERE id = @id`;
             const result = await pool.request()
                 .input("id", sql.Int, id)
                 .query(query);
@@ -78,7 +78,7 @@ const customermodel = {
     deleteCustomer: async (id) => {
         try {
             const pool = await connectToDB();
-            const query = `DELETE FROM MBCustomer WHERE id = @id`;
+            const query = `DELETE FROM CSMTranCustomer WHERE id = @id`;
             await pool.request()
                 .input("id", sql.Int, id)
                 .query(query);
@@ -91,7 +91,7 @@ const customermodel = {
         try {
             const pool = await connectToDB();
             const query = `
-                UPDATE MBCustomer
+                UPDATE CSMTranCustomer
                 SET name = @name,
                     email = @email,
                     phone = @phone,

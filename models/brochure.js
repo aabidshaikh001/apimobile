@@ -7,15 +7,15 @@ const Brochures = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBBrochures')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropBrochure')
                 BEGIN
-                    CREATE TABLE MBBrochures (
+                    CREATE TABLE REMMstPropBrochure (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL UNIQUE,
                         title NVARCHAR(255),
                         logo NVARCHAR(255),
                         pdfLink NVARCHAR(255),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -30,7 +30,7 @@ const Brochures = {
         try {
             const pool = await connectToDB();
             const query = `
-                MERGE INTO MBBrochures AS target
+                MERGE INTO REMMstPropBrochure AS target
                 USING (SELECT @propertyId AS propertyId) AS source
                 ON target.propertyId = source.propertyId
                 WHEN MATCHED THEN 
@@ -54,7 +54,7 @@ const Brochures = {
     getBrochureByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBBrochures WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstPropBrochure WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -68,7 +68,7 @@ const Brochures = {
     deleteBrochureByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBBrochures WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstPropBrochure WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

@@ -2,15 +2,15 @@ const sql = require("mssql") // const mssql library
 const connectToDB = require("../config/db") // const database connection
 
 class User {
-  // Create users table if it doesn't exist
+  // Create CSMMstBroker table if it doesn't exist
   static async createTable() {
     try {
       const pool = await connectToDB()
 
       await pool.request().query(`
-   IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='users' AND xtype='U')
+   IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='CSMMstBroker' AND xtype='U')
 
-        CREATE TABLE users (
+        CREATE TABLE CSMMstBroker (
           id VARCHAR(36) PRIMARY KEY,
           email VARCHAR(255) NOT NULL UNIQUE,
           name VARCHAR(255),
@@ -39,7 +39,7 @@ class User {
           userId VARCHAR(36) NOT NULL,
           documentUrl VARCHAR(500) NOT NULL,
           createdAt DATETIME DEFAULT GETDATE(),
-          FOREIGN KEY (userId) REFERENCES users(id)
+          FOREIGN KEY (userId) REFERENCES CSMMstBroker(id)
         )
       `)
 
@@ -73,7 +73,7 @@ class User {
         .input("name", sql.VarChar, name)
         .input("phone", sql.VarChar, phone)
         .query(`
-          INSERT INTO users (id, email, name, phone)
+          INSERT INTO CSMMstBroker (id, email, name, phone)
           VALUES (@id, @email, @name, @phone)
         `)
 
@@ -95,7 +95,7 @@ class User {
         .query(`
           SELECT u.*, 
             (SELECT STRING_AGG(documentUrl, ',') FROM user_documents WHERE userId = u.id) as documents
-          FROM users u
+          FROM CSMMstBroker u
           WHERE u.email = @email
         `)
 
@@ -130,7 +130,7 @@ class User {
         .request()
         .input("id", sql.VarChar, id)
         .query(`
-          SELECT * FROM users
+          SELECT * FROM CSMMstBroker
           WHERE id = @id
         `)
 
@@ -189,7 +189,7 @@ class User {
         updateFields.push(`updatedAt = GETDATE()`)
   
         const updateQuery = `
-          UPDATE users
+          UPDATE CSMMstBroker
           SET ${updateFields.join(", ")}
           WHERE id = @id
         `

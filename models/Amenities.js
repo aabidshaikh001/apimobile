@@ -7,14 +7,14 @@ const Amenities = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBAmenities')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropAmenity')
                 BEGIN
-                    CREATE TABLE MBAmenities (
+                    CREATE TABLE REMMstPropAmenity (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50),
                         icon NVARCHAR(255),
                         label NVARCHAR(255),
-                        FOREIGN KEY (propertyId) REFERENCES MBProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
                     );
                 END;
             `;
@@ -30,7 +30,7 @@ const Amenities = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBAmenities (propertyId, icon, label)
+                INSERT INTO REMMstPropAmenity (propertyId, icon, label)
                 VALUES (@propertyId, @icon, @label)
             `;
             await pool.request()
@@ -59,7 +59,7 @@ const Amenities = {
                     .input("icon", sql.NVarChar(255), amenity.icon)
                     .input("label", sql.NVarChar(255), amenity.label)
                     .query(`
-                        INSERT INTO MBAmenities (propertyId, icon, label)
+                        INSERT INTO REMMstPropAmenity (propertyId, icon, label)
                         VALUES (@propertyId, @icon, @label)
                     `);
                 request.parameters = {}; // Clear parameters before next iteration
@@ -76,7 +76,7 @@ const Amenities = {
     getAmenitiesByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBAmenities WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstPropAmenity WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -91,7 +91,7 @@ const Amenities = {
     deleteAmenitiesByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBAmenities WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstPropAmenity WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);

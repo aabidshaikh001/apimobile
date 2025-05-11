@@ -4,9 +4,9 @@ const sql = require("mssql"); // ✅ Import sql from mssql
 const HomePage = {
   async createTable() {
     const query = `
-      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='homepagedata' AND xtype='U')
+      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='REMWEBPageHome' AND xtype='U')
       BEGIN
-        CREATE TABLE homepagedata (
+        CREATE TABLE REMWEBPageHome (
           id INT PRIMARY KEY IDENTITY(1,1),
           homeComponentName NVARCHAR(255) NOT NULL,
           homeComponenData NVARCHAR(MAX) NOT NULL
@@ -25,7 +25,7 @@ const HomePage = {
   
     const db = await connectToDB();
     const query = `
-      INSERT INTO homepagedata (homeComponentName, homeComponenData)
+      INSERT INTO REMWEBPageHome (homeComponentName, homeComponenData)
       VALUES (@homeComponentName, @homeComponenData)
     `;
   
@@ -37,14 +37,14 @@ const HomePage = {
   
   getAll: async () => {
     const db = await connectToDB();
-    const sql = `SELECT * FROM homepagedata`;
+    const sql = `SELECT * FROM REMWEBPageHome`;
     const result = await db.request().query(sql);
     return result.recordset;
   },
 
   getById: async (id) => {
     const db = await connectToDB();
-    const sql = `SELECT * FROM homepagedata WHERE id = @id`;
+    const sql = `SELECT * FROM REMWEBPageHome WHERE id = @id`;
     const result = await db.request()
       .input("id", id)
       .query(sql);
@@ -54,7 +54,7 @@ const HomePage = {
   update: async (id, { homeComponentName, homeComponenData }) => {
     const db = await connectToDB();
     const sql = `
-      UPDATE homepagedata
+      UPDATE REMWEBPageHome
       SET homeComponentName = @homeComponentName,
           homeComponenData = @homeComponenData
       WHERE id = @id
@@ -68,7 +68,7 @@ const HomePage = {
 
   delete: async (id) => {
     const db = await connectToDB();
-    const sql = `DELETE FROM homepagedata WHERE id = @id`;
+    const sql = `DELETE FROM REMWEBPageHome WHERE id = @id`;
     await db.request()
       .input("id", id)
       .query(sql);
