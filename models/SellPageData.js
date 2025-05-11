@@ -5,9 +5,9 @@ const SellPages = {
   createTable: async () => {
     const db = await connectToDB();
     const sql = `
-      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='sellPages' AND xtype='U')
+      IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='REMWEBPageSell' AND xtype='U')
       BEGIN
-        CREATE TABLE sellPages (
+        CREATE TABLE REMWEBPageSell (
           id INT PRIMARY KEY IDENTITY(1,1),
           sellPageName NVARCHAR(255) NOT NULL,
           sellPageData NVARCHAR(MAX) NOT NULL
@@ -20,7 +20,7 @@ const SellPages = {
   create: async (sellPageName, sellPageData) => {
     const db = await connectToDB();
     const sql = `
-      INSERT INTO sellPages (sellPageName, sellPageData)
+      INSERT INTO REMWEBPageSell (sellPageName, sellPageData)
       VALUES (@sellPageName, @sellPageData)
     `;
     await db.request()
@@ -31,14 +31,14 @@ const SellPages = {
 
   getAll: async () => {
     const db = await connectToDB();
-    const sql = `SELECT * FROM sellPages`;
+    const sql = `SELECT * FROM REMWEBPageSell`;
     const result = await db.request().query(sql);
     return result.recordset;
   },
 
   getById: async (id) => {
     const db = await connectToDB();
-    const sql = `SELECT * FROM sellPages WHERE id = @id`;
+    const sql = `SELECT * FROM REMWEBPageSell WHERE id = @id`;
     const result = await db.request().input("id", id).query(sql);
     return result.recordset[0];
   },

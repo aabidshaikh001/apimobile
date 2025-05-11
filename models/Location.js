@@ -7,9 +7,9 @@ const AboutLocation = {
         try {
             const pool = await connectToDB();
             const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'MBAboutLocation')
+                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropLocation')
                 BEGIN
-                    CREATE TABLE MBAboutLocation (
+                    CREATE TABLE REMMstPropLocation (
                         id INT IDENTITY(1,1) PRIMARY KEY,
                         propertyId VARCHAR(50) NOT NULL,
                         icon NVARCHAR(255),
@@ -30,7 +30,7 @@ const AboutLocation = {
         try {
             const pool = await connectToDB();
             const query = `
-                INSERT INTO MBAboutLocation (propertyId, icon, label, distance)
+                INSERT INTO REMMstPropLocation (propertyId, icon, label, distance)
                 VALUES (@propertyId, @icon, @label, @distance);
             `;
             await pool.request()
@@ -48,7 +48,7 @@ const AboutLocation = {
     getLocationsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM MBAboutLocation WHERE propertyId = @propertyId";
+            const query = "SELECT * FROM REMMstPropLocation WHERE propertyId = @propertyId";
             const result = await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
@@ -62,7 +62,7 @@ const AboutLocation = {
     deleteLocationsByPropertyId: async (propertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM MBAboutLocation WHERE propertyId = @propertyId";
+            const query = "DELETE FROM REMMstPropLocation WHERE propertyId = @propertyId";
             await pool.request()
                 .input("propertyId", sql.VarChar(50), propertyId)
                 .query(query);
