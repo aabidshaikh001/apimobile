@@ -3,9 +3,10 @@ const buyCategory = require("../models/buyCategory.model");
 exports.getAllBuyCategories = async (req, res) => {
   try {
     const data = await buyCategory.getAll();
-    res.json({ success: true, data });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.error("❌ Error getting buy categories:", error);
+    res.status(500).json({ success: false, message: "Failed to get buy categories" });
   }
 };
 

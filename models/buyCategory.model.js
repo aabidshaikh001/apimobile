@@ -1,32 +1,41 @@
 const connectToDB = require("../config/db");
 
 const buyCategory = {
-  createTable: async () => {
-    try {
-      const pool = await connectToDB();
-      await pool.request().query(`
-        IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='REMMstPropCatBuy' AND xtype='U')
-        CREATE TABLE REMMstPropCatBuy (
-          id INT IDENTITY(1,1) PRIMARY KEY,
-          heading NVARCHAR(255) NOT NULL,
-          items NVARCHAR(MAX) NOT NULL
-        )
-      `);
-      console.log("✅ REMMstPropCatBuy table ensured");
-    } catch (err) {
-      console.error("❌ Error creating REMMstPropCatBuy table:", err);
-    }
-  },
-
+  
   getAll: async () => {
+  try {
     const pool = await connectToDB();
-    const result = await pool.request().query("SELECT * FROM REMMstPropCatBuy");
-    return result.recordset.map(row => ({
-      id: row.id,
-      heading: row.heading,
-      items: JSON.parse(row.items),
-    }));
-  },
+
+    const [categoryResult, tagResult] = await Promise.all([
+      pool.request().query(`
+        SELECT Name
+        FROM REMMstCategory
+        WHERE REMPropStatusCode = 'PS-0001' AND OrgCode = 1000 AND IsDeleted = 0
+      `),
+      pool.request().query(`
+        SELECT Name
+        FROM REMMstPropTag
+        
+        WHERE REMPropStatusCode = 'PS-0001' AND OrgCode = 1000 AND IsDeleted = 0
+      `)
+    ]);
+
+    const categoryNames = categoryResult.recordset.map(item => item.Name);
+    const tagNames = tagResult.recordset.map(item => item.Name);
+
+    return {
+      Status: categoryNames,
+      PropertyType: tagNames
+    };
+  } catch (err) {
+    console.error("❌ Error fetching category and tag names:", err);
+    return {
+      categoryItems: [],
+      tagItems: []
+    };
+  }
+},
+
 
   create: async (heading, items) => {
     const pool = await connectToDB();

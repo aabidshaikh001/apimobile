@@ -26,8 +26,7 @@ const ProjectDetails = require("./models/projectDetailsModel.js");
 const AboutDeveloper = require("./models/AboutDeveloper.js");
 const AboutProject = require("./models/AboutProject.js");
 const StateCity = require("./models/stateCityModel.js");
-const buyCategory = require("./models/buyCategory.model.js");
-const rentCategory = require("./models/rentcatogry.js"); // Assuming you have a rentCategory model
+
 const ExploreCities = require("./models/ExploreCitites.js"); // Assuming you have an ExploreCities model
 const Testimonial = require("./models/Testimonials.js");
 const Faqmodel = require("./models/faqmodel.js");
@@ -160,8 +159,7 @@ const initDB = async () => {
     await Booking.createTable()
     await Quries.createTable()
     await customermodel.createTable()
-    await buyCategory.createTable(); // Ensure buy category table exists
-    await rentCategory.createTable(); // Ensure rent category table exists
+
     
 
     await JobModel.createTable(); // Ensure jobs table exists
