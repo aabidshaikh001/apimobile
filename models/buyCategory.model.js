@@ -9,7 +9,7 @@ const buyCategory = {
     const [categoryResult, tagResult] = await Promise.all([
       pool.request().query(`
         SELECT Name
-        FROM REMMstCategory
+        FROM REMMstPropCategory
         WHERE REMPropStatusCode = 'PS-0001' AND OrgCode = 1000 AND IsDeleted = 0
       `),
       pool.request().query(`
@@ -24,8 +24,8 @@ const buyCategory = {
     const tagNames = tagResult.recordset.map(item => item.Name);
 
     return {
-      Status: categoryNames,
-      PropertyType: tagNames
+      PropertyType: categoryNames,
+      Status: tagNames
     };
   } catch (err) {
     console.error("❌ Error fetching category and tag names:", err);

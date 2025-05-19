@@ -6,9 +6,10 @@ const propertyLeadsController = require("../controllers/propertyLeadsController"
 router.post("/", propertyLeadsController.createLead);
 
 // GET: Get leads by property ID
-router.get("/:propertyId", propertyLeadsController.getLeads);
+router.get("/:propertyId", propertyLeadsController.getLead);
 
 // DELETE: Delete a lead by ID
 router.delete("/:id", propertyLeadsController.deleteLead);
+
 
 module.exports = router;

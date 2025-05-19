@@ -10,14 +10,14 @@ getAll: async () => {
     const [categoryResult, tagResult] = await Promise.all([
       pool.request().query(`
         SELECT Name
-        FROM REMMstCategory
-        WHERE REMPropStatusCode = 'PS-0003' AND OrgCode = 1000 AND IsDeleted = 0
+        FROM REMMstPropCategory
+        WHERE REMPropStatusCode = 'PS-0002' AND OrgCode = 1000 AND IsDeleted = 0
       `),
       pool.request().query(`
         SELECT Name
         FROM REMMstPropTag
         
-        WHERE REMPropStatusCode = 'PS-0003' AND OrgCode = 1000 AND IsDeleted = 0
+        WHERE REMPropStatusCode = 'PS-0002' AND OrgCode = 1000 AND IsDeleted = 0
       `)
     ]);
 
@@ -25,8 +25,8 @@ getAll: async () => {
     const tagNames = tagResult.recordset.map(item => item.Name);
 
     return {
-      Status: categoryNames,
-      PropertyType: tagNames
+      PropertyType: categoryNames,
+      Status: tagNames
     };
   } catch (err) {
     console.error("❌ Error fetching category and tag names:", err);
