@@ -66,41 +66,55 @@ const PropertyLeads = {
     }
   },
 
-  insertLead: async (data) => {
-    try {
-      const pool = await connectToDB();
-      const leadCode = await PropertyLeads.getNextLeadCode();
+ insertLead: async (data) => {
+  try {
+    const pool = await connectToDB();
+    const leadCode = await PropertyLeads.getNextLeadCode();
 
-      const result = await pool.request()
-        .input("OrgCode", sql.Int, 1000)
-        .input("LeadCode", sql.VarChar(50), leadCode)
-        .input("Name", sql.VarChar(100), data.name || null)
-        .input("Address1", sql.VarChar(150), data.address || null)
-        .input("Phone", sql.VarChar(50), data.phone || null)
-        .input("Email", sql.VarChar(50), data.email || null)
-        .input("ProjectCode", sql.VarChar(50), data.propertyId || null)
-        .input("LeadDesc", sql.VarChar(500), data.message || null)
-        .input("TransBy", sql.VarChar(50), "Website")
-        .input("LeadTypeId", sql.Int, 1)
-        .input("REMPropStatusCode", sql.VarChar(50), 'PS-0001')
-        .query(`
-          INSERT INTO LDMMstLead (
-            OrgCode, LeadCode, Name, Address1, Phone, Email, 
-            ProjectCode, LeadDesc, TransBy, LeadTypeId, REMPropStatusCode
-          )
-          VALUES (
-            @OrgCode, @LeadCode, @Name, @Address1, @Phone, @Email,
-            @ProjectCode, @LeadDesc, @TransBy, @LeadTypeId, @REMPropStatusCode
-          );
-          SELECT SCOPE_IDENTITY() AS LeadId;
-        `);
+  const result = await pool.request()
+  .input("LeadDate", sql.DateTime, new Date())
+  .input("OrgCode", sql.Int, 1000)
+  .input("LeadCode", sql.VarChar(50), leadCode)
+  .input("Name", sql.VarChar(100), data.name || null)
+  .input("Address1", sql.VarChar(150), data.address || null)
+  .input("Mobile", sql.VarChar(50), data.phone || null)
+  .input("Email", sql.VarChar(50), data.email || null)
+  .input("ProjectCode", sql.VarChar(50), data.propertyId || null)
+  .input("LeadDesc", sql.VarChar(500), data.message || null)
+  .input("MinBudget", sql.VarChar(50), data.minBudget || null)
+  .input("MaxBudget", sql.VarChar(50), data.maxBudget || null)
+  .input("TransBy", sql.VarChar(50), "Website")
+  .input("LeadTypeId", sql.Int, data.LeadTypeId || 1)
+  .input("LeadSourceId", sql.Int, data.LeadSourceId || 1) // ✅ Fixed here
+  .input("REMPropStatusCode", sql.VarChar(50), 'PS-0001')
+  .input("StatusId", sql.Int, 1)
+  .input("REMCategoryCode", sql.VarChar(50), data.REMCategoryCode || null)
+  .input("REMPropTagCode", sql.VarChar(150), data.REMPropTagCode || null)
 
-      return { success: true, leadId: result.recordset[0].LeadId };
-    } catch (error) {
-      console.error("❌ Insert Lead Error:", error);
-      return { success: false, error };
-    }
-  },
+      .query(`
+        INSERT INTO LDMMstLead (
+  LeadDate, OrgCode, LeadCode, Name, Address1, Mobile, Email, 
+  ProjectCode, LeadDesc, MinBudget, MaxBudget, TransBy, 
+  LeadTypeId, LeadSourceId, REMPropStatusCode, StatusId, 
+  REMCategoryCode, REMPropTagCode
+)
+VALUES (
+  @LeadDate, @OrgCode, @LeadCode, @Name, @Address1, @Mobile, @Email,
+  @ProjectCode, @LeadDesc, @MinBudget, @MaxBudget, @TransBy,
+  @LeadTypeId, @LeadSourceId, @REMPropStatusCode, @StatusId,
+  @REMCategoryCode, @REMPropTagCode
+);
+
+        SELECT SCOPE_IDENTITY() AS LeadId;
+      `);
+
+    return { success: true, leadId: result.recordset[0].LeadId };
+  } catch (error) {
+    console.error("❌ Insert Lead Error:", error.message || error);
+    return { success: false, error: error.message || error };
+  }
+},
+
 
   getLeadById: async (leadId) => {
     try {

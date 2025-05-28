@@ -8,9 +8,16 @@ exports.createLead = async (req, res) => {
       phone: req.body.phone,
       message: req.body.message,
       address: req.body.address,
-      propertyId: req.body.propertyId
+      propertyId: req.body.propertyId,
+      minBudget: req.body.minBudget,
+      maxBudget: req.body.maxBudget,
+      LeadSourceId: req.body.LeadSourceId || 1, // Default to 1 if not provided
+      LeadTypeId: req.body.LeadTypeId || 1, // Default to 1 if not provided
+       REMCategoryCode: req.body.REMCategoryCode || null, // Changed from CategoryCode
+      REMPropTagCode: req.body.REMPropTagCode || null
     };
-
+console.log("Received REMCategoryCode:", req.body.REMCategoryCode);
+console.log("Received REMPropTagCode:", req.body.REMPropTagCode);
     const result = await PropertyLeads.insertLead(leadData);
     if (result.success) {
       const newLead = await PropertyLeads.getLeadById(result.leadId);

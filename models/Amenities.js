@@ -14,7 +14,7 @@ const Amenities = {
                         propertyId VARCHAR(50),
                         icon NVARCHAR(255),
                         label NVARCHAR(255),
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
                     );
                 END;
             `;

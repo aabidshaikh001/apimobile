@@ -13,7 +13,7 @@ const router = express.Router();
 // Get all properties
 router.get("/", getAllProperties);
 // Get property by ID
-router.get("/:id", getPropertyById);
+router.get('/:PropertyId', getPropertyById);
 // Insert a new property
 router.post("/", insertProperty);
 // Update a property

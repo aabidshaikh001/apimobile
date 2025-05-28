@@ -7,14 +7,14 @@ const AboutLocality = {
       const pool = await connectToDB();
       await pool.request().query(`
         IF NOT EXISTS (
-          SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Locality'
+          SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropLocality'
         )
-        CREATE TABLE Locality (
+        CREATE TABLE REMMstPropLocality (
           propertyId VARCHAR(50) PRIMARY KEY,
           localityDescription NVARCHAR(MAX),
           localityFeatureName NVARCHAR(MAX),
-          localityFeatureDistance NVARCHAR(MAX),
-            FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+      localityFeatureDistance NVARCHAR(MAX),
+            FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
         )
       `);
       console.log("✅ Locality table ensured.");
@@ -28,7 +28,7 @@ const AboutLocality = {
     const result = await pool
       .request()
       .input("propertyId", sql.VarChar(50), propertyId)
-      .query("SELECT * FROM Locality WHERE propertyId = @propertyId");
+      .query("SELECT * FROM REMMstPropLocality WHERE propertyId = @propertyId");
     return result.recordset[0];
   },
 
@@ -40,7 +40,7 @@ const AboutLocality = {
       .input("localityFeatureName", sql.NVarChar(sql.MAX), localityFeatureName)
       .input("localityFeatureDistance", sql.NVarChar(sql.MAX), localityFeatureDistance)
       .query(`
-        MERGE INTO Locality AS target
+        MERGE INTO REMMstPropLocality AS target
         USING (SELECT @propertyId AS propertyId) AS source
         ON target.propertyId = source.propertyId
         WHEN MATCHED THEN
@@ -59,7 +59,7 @@ const AboutLocality = {
     await pool
       .request()
       .input("propertyId", sql.VarChar(50), propertyId)
-      .query("DELETE FROM Locality WHERE propertyId = @propertyId");
+      .query("DELETE FROM REMMstPropLocality WHERE propertyId = @propertyId");
   }
 };
 

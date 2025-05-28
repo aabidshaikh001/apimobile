@@ -11,7 +11,7 @@ const ProjectDetails = {
           propertyId VARCHAR(50) PRIMARY KEY,
           projectDetailLabel NVARCHAR(MAX),
           projectDetailValue NVARCHAR(MAX),
-          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
         )
       `);
       console.log("✅ ProjectDetails table checked/created successfully.");

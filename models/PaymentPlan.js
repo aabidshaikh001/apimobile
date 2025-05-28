@@ -14,7 +14,7 @@ const PaymentPlan = {
                         propertyId VARCHAR(50) NOT NULL,
                         payment NVARCHAR(50),
                         milestone NVARCHAR(MAX),
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
                     );
                 END;
             `;

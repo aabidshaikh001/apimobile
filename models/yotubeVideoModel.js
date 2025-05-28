@@ -14,7 +14,7 @@ const Yotubevideo = {
           id INT PRIMARY KEY IDENTITY(1,1),
           propertyId VARCHAR(50) NOT NULL UNIQUE,
           video NVARCHAR(MAX),
-          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+          FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
         )
       `);
       console.log("✅ REMMstPropVideo table created or already exists.");

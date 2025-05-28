@@ -13,7 +13,7 @@ const BankInfo = {
                         propertyId VARCHAR(50) NOT NULL,
                         name NVARCHAR(255),
                         logo NVARCHAR(255),
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
                     );
                 END;
             `;

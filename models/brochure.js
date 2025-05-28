@@ -10,12 +10,12 @@ const Brochures = {
                 IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstPropBrochure')
                 BEGIN
                     CREATE TABLE REMMstPropBrochure (
-                        id INT IDENTITY(1,1) PRIMARY KEY,
-                        propertyId VARCHAR(50) NOT NULL UNIQUE,
+                    id INT IDENTITY(1,1) PRIMARY KEY,
+                    propertyId VARCHAR(50) NOT NULL UNIQUE,
                         title NVARCHAR(255),
                         logo NVARCHAR(255),
-                        pdfLink NVARCHAR(255),
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+                    pdfLink NVARCHAR(255),
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
                     );
                 END;
             `;

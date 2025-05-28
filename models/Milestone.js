@@ -15,7 +15,7 @@ const Milestone = {
                         name NVARCHAR(255),
                         condition NVARCHAR(50),
                         brokerage NVARCHAR(50),
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
                     );
                 END;
             `;

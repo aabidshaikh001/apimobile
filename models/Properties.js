@@ -1,17 +1,15 @@
 const connectToDB = require("../config/db");
 const sql = require("mssql");
 
-
 const generatePropertyId = async () => {
     try {
         const pool = await connectToDB();
-        const query = `SELECT TOP 1 id FROM REMMstProperties ORDER BY id DESC`;
+        const query = `SELECT TOP 1 PropertyId FROM REMMstProperties ORDER BY PropertyId DESC`;
         const result = await pool.request().query(query);
 
         if (result.recordset.length > 0) {
-            const lastId = result.recordset[0].id;
+            const lastId = result.recordset[0].PropertyId;
             const match = lastId.match(/TREC-prop(\d+)-(\d+)/);
-
             if (match) {
                 let numericPart = parseInt(match[1]) + 1;
                 let suffix = parseInt(match[2]) + 1;
@@ -26,7 +24,6 @@ const generatePropertyId = async () => {
 };
 
 const Properties = {
-    // Create Properties Table
     createTable: async () => {
         try {
             const pool = await connectToDB();
@@ -34,7 +31,7 @@ const Properties = {
                 IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstProperties')
                 BEGIN
                     CREATE TABLE REMMstProperties (
-                        id VARCHAR(50) PRIMARY KEY,
+                        PropertyId VARCHAR(50) PRIMARY KEY,
                         title NVARCHAR(255),
                         location NVARCHAR(255),
                         price NVARCHAR(50),
@@ -46,8 +43,6 @@ const Properties = {
                         propertyFor NVARCHAR(10),
                         images NVARCHAR(MAX),
                         brokerage NVARCHAR(50),
-                        tag NVARCHAR(50),
-                        readyToMove BIT,
                         discount NVARCHAR(50),
                         visitBonus NVARCHAR(255),
                         bhkOptions NVARCHAR(MAX),
@@ -55,7 +50,8 @@ const Properties = {
                         carpetArea NVARCHAR(50),
                         isSaved BIT,
                         isFeatured BIT,
-                        type NVARCHAR(100) 
+                        type NVARCHAR(100),
+                        projectId INT
                     );
                 END;
             `;
@@ -66,7 +62,6 @@ const Properties = {
         }
     },
 
-    // Insert Property with Auto-Generated ID
     insertProperty: async (property) => {
         try {
             const pool = await connectToDB();
@@ -74,11 +69,20 @@ const Properties = {
             if (!newId) throw new Error("Failed to generate property ID");
 
             const query = `
-                INSERT INTO REMMstProperties (id, title, location, price, pricePerSqft, latitude, longitude, propertyType, status, propertyFor, images, brokerage, tag, readyToMove, discount, visitBonus, bhkOptions, isSaved, isFeatured, superBuiltUpArea, carpetArea, type)
-                VALUES (@id, @title, @location, @price, @pricePerSqft, @latitude, @longitude, @propertyType, @status, @propertyFor, @images, @brokerage, @tag, @readyToMove, @discount, @visitBonus, @bhkOptions, @isSaved, @isFeatured, @superBuiltUpArea, @carpetArea, @type)
+                INSERT INTO REMMstProperties (
+                    PropertyId, title, location, price, pricePerSqft, latitude, longitude, propertyType, status,
+                    propertyFor, images, brokerage, tag, readyToMove, discount, visitBonus, bhkOptions,
+                    isSaved, isFeatured, superBuiltUpArea, carpetArea, type, projectId
+                )
+                VALUES (
+                    @PropertyId, @title, @location, @price, @pricePerSqft, @latitude, @longitude, @propertyType, @status,
+                    @propertyFor, @images, @brokerage, @tag, @readyToMove, @discount, @visitBonus, @bhkOptions,
+                    @isSaved, @isFeatured, @superBuiltUpArea, @carpetArea, @type, @projectId
+                )
             `;
+
             await pool.request()
-                .input("id", sql.VarChar(50), newId)
+                .input("PropertyId", sql.VarChar(50), newId)
                 .input("title", sql.NVarChar(255), property.title)
                 .input("location", sql.NVarChar(255), property.location)
                 .input("price", sql.NVarChar(50), property.price)
@@ -100,15 +104,16 @@ const Properties = {
                 .input("superBuiltUpArea", sql.NVarChar(50), property.superBuiltUpArea)
                 .input("carpetArea", sql.NVarChar(50), property.carpetArea)
                 .input("type", sql.NVarChar(100), property.type)
+                .input("projectId", sql.Int, property.projectId)
                 .query(query);
+
             console.log("Property inserted successfully with ID:", newId);
         } catch (error) {
             console.error("Error inserting property:", error);
         }
     },
 
-    // Update Property
-    updateProperty: async (id, property) => {
+    updateProperty: async (PropertyId, property) => {
         try {
             const pool = await connectToDB();
             const query = `
@@ -130,14 +135,16 @@ const Properties = {
                     visitBonus = @visitBonus,
                     bhkOptions = @bhkOptions,
                     isSaved = @isSaved,
-                    isFeatured = @isFeatured
+                    isFeatured = @isFeatured,
                     superBuiltUpArea = @superBuiltUpArea,
-                    carpetArea = @carpetArea
-                    type = @type
-                WHERE id = @id
+                    carpetArea = @carpetArea,
+                    type = @type,
+                    projectId = @projectId
+                WHERE PropertyId = @PropertyId
             `;
+
             await pool.request()
-                .input("id", sql.VarChar(50), id)
+                .input("PropertyId", sql.VarChar(50), PropertyId)
                 .input("title", sql.NVarChar(255), property.title)
                 .input("location", sql.NVarChar(255), property.location)
                 .input("price", sql.NVarChar(50), property.price)
@@ -159,12 +166,15 @@ const Properties = {
                 .input("superBuiltUpArea", sql.NVarChar(50), property.superBuiltUpArea)
                 .input("carpetArea", sql.NVarChar(50), property.carpetArea)
                 .input("type", sql.NVarChar(100), property.type)
+                .input("projectId", sql.Int, property.projectId)
                 .query(query);
+
             console.log("Property updated successfully.");
         } catch (error) {
             console.error("Error updating property:", error);
         }
     },
+
     getAllProperties: async () => {
         try {
             const pool = await connectToDB();
@@ -177,12 +187,12 @@ const Properties = {
         }
     },
 
-    getPropertyById: async (id) => {
+    getPropertyById: async (PropertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "SELECT * FROM REMMstProperties WHERE id = @id";
+            const query = "SELECT * FROM REMMstProperties WHERE PropertyId = @PropertyId";
             const result = await pool.request()
-                .input("id", sql.VarChar(50), id)
+                .input("PropertyId", sql.VarChar(50), PropertyId)
                 .query(query);
             return result.recordset[0];
         } catch (error) {
@@ -191,14 +201,12 @@ const Properties = {
         }
     },
 
-   
-
-    deleteProperty: async (id) => {
+    deleteProperty: async (PropertyId) => {
         try {
             const pool = await connectToDB();
-            const query = "DELETE FROM REMMstProperties WHERE id = @id";
+            const query = "DELETE FROM REMMstProperties WHERE PropertyId = @PropertyId";
             await pool.request()
-                .input("id", sql.VarChar(50), id)
+                .input("PropertyId", sql.VarChar(50), PropertyId)
                 .query(query);
             console.log("Property deleted successfully.");
         } catch (error) {

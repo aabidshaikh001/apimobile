@@ -1,123 +1,156 @@
-
-const connectToDB = require("../config/db");
 const sql = require("mssql");
+const connectToDB = require("../config/db");
 
+const Builder = {
+  // Create Table
+  createTable: async () => {
+    try {
+      const pool = await connectToDB();
+      await pool.request().query(`
+        IF NOT EXISTS (
+          SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstBuilder'
+        )
+        CREATE TABLE REMMstBuilder (
+          builderId INT IDENTITY(1,1) PRIMARY KEY,
+          name NVARCHAR(255) NOT NULL,
+          established NVARCHAR(50),
+          logo NVARCHAR(255),
+          overview NVARCHAR(MAX),
+          experience NVARCHAR(MAX),
+          certifications NVARCHAR(MAX),
+          headOffice NVARCHAR(MAX),
+          contactEmail NVARCHAR(50),
+          contactPhone NVARCHAR(MAX),
+          website NVARCHAR(50),
+          socialLinks NVARCHAR(MAX),
+          status NVARCHAR(10),
+          createdAt DATETIME2(7) DEFAULT SYSUTCDATETIME(),
+          updatedAt DATETIME2(7) DEFAULT SYSUTCDATETIME()
+        );
+      `);
+      console.log("✅ REMMstBuilder table created");
+    } catch (error) {
+      console.error("❌ Error creating REMMstBuilder table:", error.message);
+      throw error;
+    }
+  },
 
-const BuilderDetails = {
-    createTable: async () => {
-        try {
-            const pool = await connectToDB();
-            const query = `
-                IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'REMMstBuilder')
-                BEGIN
-                    CREATE TABLE REMMstBuilder (
-                        id INT IDENTITY(1,1) PRIMARY KEY,
-                        propertyId VARCHAR(50) NOT NULL UNIQUE,
-                        name NVARCHAR(255),
-                        established NVARCHAR(50),
-                        logo NVARCHAR(255),
-                        overview NVARCHAR(MAX),
-                        experience NVARCHAR(MAX),
-                        certifications NVARCHAR(MAX),
-                        projects NVARCHAR(MAX), -- Storing JSON string
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
-                    );
-                END;
-            `;
-            await pool.request().query(query);
-            console.log("BuilderDetails table created or already exists.");
-        } catch (error) {
-            console.error("Error creating BuilderDetails table:", error);
-        }
-    },
+  // Create builder
+  create: async (builderData) => {
+    try {
+      const pool = await connectToDB();
+      const result = await pool.request()
+        .input("name", sql.NVarChar(255), builderData.name)
+        .input("established", sql.NVarChar(50), builderData.established)
+        .input("logo", sql.NVarChar(255), builderData.logo)
+        .input("overview", sql.NVarChar(sql.MAX), builderData.overview)
+        .input("experience", sql.NVarChar(sql.MAX), builderData.experience)
+        .input("certifications", sql.NVarChar(sql.MAX), builderData.certifications)
+        .input("headOffice", sql.NVarChar(sql.MAX), builderData.headOffice)
+        .input("contactEmail", sql.NVarChar(50), builderData.contactEmail)
+        .input("contactPhone", sql.NVarChar(sql.MAX), builderData.contactPhone)
+        .input("website", sql.NVarChar(50), builderData.website)
+        .input("socialLinks", sql.NVarChar(sql.MAX), builderData.socialLinks)
+        .input("status", sql.NVarChar(10), builderData.status)
+        .query(`
+          INSERT INTO REMMstBuilder (
+            name, established, logo, overview, experience, certifications,
+            headOffice, contactEmail, contactPhone, website, socialLinks, status
+          )
+          OUTPUT INSERTED.builderId
+          VALUES (
+            @name, @established, @logo, @overview, @experience, @certifications,
+            @headOffice, @contactEmail, @contactPhone, @website, @socialLinks, @status
+          )
+        `);
+      return result.recordset[0].builderId;
+    } catch (error) {
+      console.error("❌ Error creating builder:", error.message);
+      throw error;
+    }
+  },
 
-    upsertBuilderDetails: async (builderDetails) => {
-        try {
-            const pool = await connectToDB();
-            const query = `
-                MERGE INTO REMMstBuilder AS target
-                USING (SELECT @propertyId AS propertyId) AS source
-                ON target.propertyId = source.propertyId
-                WHEN MATCHED THEN 
-                    UPDATE SET 
-                        name = @name, 
-                        established = @established, 
-                        logo = @logo, 
-                        overview = @overview, 
-                        experience = @experience, 
-                        certifications = @certifications, 
-                        projects = @projects
-                WHEN NOT MATCHED THEN 
-                    INSERT (propertyId, name, established, logo, overview, experience, certifications, projects) 
-                    VALUES (@propertyId, @name, @established, @logo, @overview, @experience, @certifications, @projects);
-            `;
+  // Get builder by ID
+  getById: async (builderId) => {
+    try {
+      const pool = await connectToDB();
+      const result = await pool.request()
+        .input("builderId", sql.Int, builderId)
+        .query(`SELECT * FROM REMMstBuilder WHERE builderId = @builderId`);
+      return result.recordset[0];
+    } catch (error) {
+      console.error("❌ Error fetching builder by ID:", error.message);
+      throw error;
+    }
+  },
 
-            await pool.request()
-                .input("propertyId", sql.VarChar(50), builderDetails.propertyId)
-                .input("name", sql.NVarChar(255), builderDetails.name)
-                .input("established", sql.NVarChar(50), builderDetails.established)
-                .input("logo", sql.NVarChar(255), builderDetails.logo)
-                .input("overview", sql.NVarChar(sql.MAX), builderDetails.overview)
-                .input("experience", sql.NVarChar(sql.MAX), builderDetails.experience)
-                .input("certifications", sql.NVarChar(sql.MAX), builderDetails.certifications)
-                .input("projects", sql.NVarChar(sql.MAX), JSON.stringify(builderDetails.projects)) // Convert projects array to JSON string
-                .query(query);
+  // Update builder
+  update: async (builderId, builderData) => {
+    try {
+      const pool = await connectToDB();
+      await pool.request()
+        .input("builderId", sql.Int, builderId)
+        .input("name", sql.NVarChar(255), builderData.name)
+        .input("established", sql.NVarChar(50), builderData.established)
+        .input("logo", sql.NVarChar(255), builderData.logo)
+        .input("overview", sql.NVarChar(sql.MAX), builderData.overview)
+        .input("experience", sql.NVarChar(sql.MAX), builderData.experience)
+        .input("certifications", sql.NVarChar(sql.MAX), builderData.certifications)
+        .input("headOffice", sql.NVarChar(sql.MAX), builderData.headOffice)
+        .input("contactEmail", sql.NVarChar(50), builderData.contactEmail)
+        .input("contactPhone", sql.NVarChar(sql.MAX), builderData.contactPhone)
+        .input("website", sql.NVarChar(50), builderData.website)
+        .input("socialLinks", sql.NVarChar(sql.MAX), builderData.socialLinks)
+        .input("status", sql.NVarChar(10), builderData.status)
+        .query(`
+          UPDATE REMMstBuilder SET
+            name = @name,
+            established = @established,
+            logo = @logo,
+            overview = @overview,
+            experience = @experience,
+            certifications = @certifications,
+            headOffice = @headOffice,
+            contactEmail = @contactEmail,
+            contactPhone = @contactPhone,
+            website = @website,
+            socialLinks = @socialLinks,
+            status = @status,
+            updatedAt = SYSUTCDATETIME()
+          WHERE builderId = @builderId
+        `);
+      return true;
+    } catch (error) {
+      console.error("❌ Error updating builder:", error.message);
+      throw error;
+    }
+  },
 
-            console.log("Builder details added or updated successfully.");
-        } catch (error) {
-            console.error("Error upserting builder details:", error);
-        }
-    },
+  // Delete builder
+  delete: async (builderId) => {
+    try {
+      const pool = await connectToDB();
+      await pool.request()
+        .input("builderId", sql.Int, builderId)
+        .query(`DELETE FROM REMMstBuilder WHERE builderId = @builderId`);
+      return true;
+    } catch (error) {
+      console.error("❌ Error deleting builder:", error.message);
+      throw error;
+    }
+  },
 
-    getBuilderDetailsByPropertyId: async (propertyId) => {
-        try {
-            const pool = await connectToDB();
-            const query = "SELECT * FROM REMMstBuilder WHERE propertyId = @propertyId";
-            const result = await pool.request()
-                .input("propertyId", sql.VarChar(50), propertyId)
-                .query(query);
-
-            if (result.recordset.length > 0) {
-                const builderDetails = result.recordset[0];
-                builderDetails.projects = JSON.parse(builderDetails.projects || "[]"); // Convert JSON string to object
-                return builderDetails;
-            }
-
-            return null;
-        } catch (error) {
-            console.error("Error fetching builder details:", error);
-            return null;
-        }
-    },
-    getAllBuilderDetails: async () => {
-        try {
-          const pool = await connectToDB();
-          const query = "SELECT * FROM REMMstBuilder";
-          const result = await pool.request().query(query);
-      
-          return result.recordset.map(builder => ({
-            ...builder,
-            projects: JSON.parse(builder.projects || "[]"),
-          }));
-        } catch (error) {
-          console.error("Error fetching all builder details:", error);
-          return [];
-        }
-      },
-      
-    deleteBuilderDetailsByPropertyId: async (propertyId) => {
-        try {
-            const pool = await connectToDB();
-            const query = "DELETE FROM REMMstBuilder WHERE propertyId = @propertyId";
-            await pool.request()
-                .input("propertyId", sql.VarChar(50), propertyId)
-                .query(query);
-            console.log("Builder details deleted successfully.");
-        } catch (error) {
-            console.error("Error deleting builder details:", error);
-        }
-    },
-   
+  // Get all builders
+  getAll: async () => {
+    try {
+      const pool = await connectToDB();
+      const result = await pool.request().query(`SELECT * FROM REMMstBuilder ORDER BY name`);
+      return result.recordset;
+    } catch (error) {
+      console.error("❌ Error fetching all builders:", error.message);
+      throw error;
+    }
+  }
 };
 
-module.exports = BuilderDetails;
+module.exports = Builder;

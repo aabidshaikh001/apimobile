@@ -16,7 +16,6 @@ getAll: async () => {
       pool.request().query(`
         SELECT Name
         FROM REMMstPropTag
-        
         WHERE REMPropStatusCode = 'PS-0002' AND OrgCode = 1000 AND IsDeleted = 0
       `)
     ]);

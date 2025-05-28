@@ -16,7 +16,7 @@ const FloorPlan = {
             area NVARCHAR(50),
             bedrooms INT,
             bathrooms INT,
-            FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+            FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
           );
         END;
       `;

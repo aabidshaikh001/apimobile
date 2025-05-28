@@ -15,7 +15,6 @@ const buyCategory = {
       pool.request().query(`
         SELECT Name
         FROM REMMstPropTag
-        
         WHERE REMPropStatusCode = 'PS-0001' AND OrgCode = 1000 AND IsDeleted = 0
       `)
     ]);

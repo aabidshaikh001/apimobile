@@ -110,6 +110,7 @@ const ServicesRoutes = require("./routes/servicesRoutes.js"); // Assuming you ha
 const sellPagesRoutes = require("./routes/sellPagesRoutes.js");
 const helpPagesRoutes = require("./routes/helpPagesRoutes.js");
 const homePageRoutes = require("./routes/homePageRoutes.js");
+const PropertyCategoryandtagRoutes = require("./routes/PropertyCategoryandtagRoutes.js"); // Assuming you have a PropertyCategoryandtag route
 
 // Debug Logger
 const debugLogger = require("./utils/debugLogger");
@@ -143,60 +144,60 @@ if (process.env.NODE_ENV !== "production") {
 const initDB = async () => {
   try {
     await connectToDB()
-    await User.createTable()
-    await OTP.createTable()
-    await Properties.createTable()
-    await AboutProperty.createTable()
-    await Amenities.createTable()
-    await BankInfo.createTable()
-    await Brochure.createTable()
-    await BuilderDetails.createTable()
-    await FloorPlan.createTable()
-    await Location.createTable()
-    await PaymentPlan.createTable()
-    await Ratings.createTable()
-    await Milestone.createTable()
-    await Booking.createTable()
-    await Quries.createTable()
-    await customermodel.createTable()
+    // await User.createTable()
+    // await OTP.createTable()
+    // await Properties.createTable()
+    // await AboutProperty.createTable()
+    // await Amenities.createTable()
+    // await BankInfo.createTable()
+    // await Brochure.createTable()
+    // await BuilderDetails.createTable()
+    // await FloorPlan.createTable()
+    // await Location.createTable()
+    // await PaymentPlan.createTable()
+    // await Ratings.createTable()
+    // await Milestone.createTable()
+    // await Booking.createTable()
+    // await Quries.createTable()
+    // await customermodel.createTable()
 
     
 
-    await JobModel.createTable(); // Ensure jobs table exists
-    await JobformModel.createTable(); // Ensure job applications table exists
-    await BusinessAssociateModel.initializeTable();
-    await ContactModel.createTable();
-    await LegalAssistanceModel.createTable();
-    await PropertyValuationModel.createtable();
-    await HomeConstructionModel.createtable();
-    await HomeInteriorModel.createtable();
-    await HomeLoanModel.createtable();
-    await HomeInsuranceModel.createtable();
-    await forbuilderModel.initializeTable();
-    await forownerModel.initializeTable();
-    await foragentModel.initializeTable();
-    await BlogModel.createTable(); // Ensure table exists
-    await aboutlocality.createTable(); // Ensure table exists
-    await Yotubevideo.createTable(); // Ensure table exists
-    await ProjectDetails.createTable(); // Ensure table exists
-    await AboutDeveloper.createTable(); // Ensure table exists
-    await AboutProject.createTable(); // Ensure table exists
-    await StateCity.createTable(); // Ensure table exists
-    await ExploreCities.createTable(); // Ensure table exists
-    await Testimonial.createTable(); // Ensure table exists
-    await Faqmodel.createTable(); // Ensure table exists
-    await TermsOfService.createTable(); // Ensure table exists
-    await Privacypolicy.createTable(); // Ensure table exists
-    await PartnerSection.createTable(); // Ensure table exists
-    await whyworkwithus.createTable(); // Ensure table exists
-    await subscribeNewsletter.createTable(); // Ensure table exists
-    await AboutUs.createTable(); // Ensure table exists
-    await PropertyLeads.createTable(); // Ensure property leads table exists
-    await Services.createTable(); // Ensure services table exists
-    await SellPages.createTable();
-    await HelpPages.createTable();
-    await HomePage.createTable();
-    console.log("Database tables initialized")
+    // await JobModel.createTable(); // Ensure jobs table exists
+    // await JobformModel.createTable(); // Ensure job applications table exists
+    // await BusinessAssociateModel.initializeTable();
+    // await ContactModel.createTable();
+    // await LegalAssistanceModel.createTable();
+    // await PropertyValuationModel.createtable();
+    // await HomeConstructionModel.createtable();
+    // await HomeInteriorModel.createtable();
+    // await HomeLoanModel.createtable();
+    // await HomeInsuranceModel.createtable();
+    // await forbuilderModel.initializeTable();
+    // await forownerModel.initializeTable();
+    // await foragentModel.initializeTable();
+    // await BlogModel.createTable(); // Ensure table exists
+    // await aboutlocality.createTable(); // Ensure table exists
+    // await Yotubevideo.createTable(); // Ensure table exists
+    // await ProjectDetails.createTable(); // Ensure table exists
+    // await AboutDeveloper.createTable(); // Ensure table exists
+    // await AboutProject.createTable(); // Ensure table exists
+    // await StateCity.createTable(); // Ensure table exists
+    // await ExploreCities.createTable(); // Ensure table exists
+    // await Testimonial.createTable(); // Ensure table exists
+    // await Faqmodel.createTable(); // Ensure table exists
+    // await TermsOfService.createTable(); // Ensure table exists
+    // await Privacypolicy.createTable(); // Ensure table exists
+    // await PartnerSection.createTable(); // Ensure table exists
+    // await whyworkwithus.createTable(); // Ensure table exists
+    // await subscribeNewsletter.createTable(); // Ensure table exists
+    // await AboutUs.createTable(); // Ensure table exists
+    // await PropertyLeads.createTable(); // Ensure property leads table exists
+    // await Services.createTable(); // Ensure services table exists
+    // await SellPages.createTable();
+    // await HelpPages.createTable();
+    // await HomePage.createTable();
+    // console.log("Database tables initialized")
   } catch (error) {
     console.error("Database initialization error:", error)
     process.exit(1)
@@ -259,6 +260,7 @@ app.use("/api/services", ServicesRoutes); // Services route
 app.use("/api/sellpages", sellPagesRoutes); // Sell pages route
 app.use("/api/helppage",helpPagesRoutes)
 app.use("/api/homepage", homePageRoutes);
+app.use("/api/property-category-and-tag", PropertyCategoryandtagRoutes); // Property category and tag route
 
 // Health check route
 app.get("/health", (req, res) => {

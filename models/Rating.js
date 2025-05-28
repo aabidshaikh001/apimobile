@@ -15,7 +15,7 @@ const Rating = {
                         avatar NVARCHAR(255),
                         rating INT CHECK (rating BETWEEN 1 AND 5),
                         review NVARCHAR(MAX),
-                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(id) ON DELETE CASCADE
+                        FOREIGN KEY (propertyId) REFERENCES REMMstProperties(PropertyId) ON DELETE CASCADE
                     );
                 END;
             `;

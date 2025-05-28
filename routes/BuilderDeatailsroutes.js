@@ -1,16 +1,12 @@
 const express = require("express");
-const { 
-    upsertBuilderDetails, 
-    getBuilderDetailsByPropertyId, 
-    deleteBuilderDetailsByPropertyId,
-    getAllBuilderDetails 
-} = require("../controllers/builderdeatils");
-
 const router = express.Router();
+const builderController = require("../controllers/builderdeatils");
 
-router.post("/", upsertBuilderDetails);
-router.get("/:propertyId", getBuilderDetailsByPropertyId);
-router.delete("/:propertyId", deleteBuilderDetailsByPropertyId);
-router.get("/", getAllBuilderDetails);
+router.post("/", builderController.createBuilder);
+router.get("/", builderController.getAllBuilders);
+router.get("/:id", builderController.getBuilderById);
+router.put("/:id", builderController.updateBuilder);
+router.delete("/:id", builderController.deleteBuilder);
+router.get("/:id/details", builderController.getBuilderWithDetails);
 
-module.exports = router; // CommonJS export
+module.exports = router;

@@ -1,18 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {
-  createAboutProject,
-  getAboutProject,
-  updateAboutProject
-} = require("../controllers/aboutProjectController");
+const projectController = require("../controllers/aboutProjectController");
 
-// POST /api/aboutproject/:propertyId
-router.post("/:propertyId", createAboutProject);
-
-// GET /api/aboutproject/:propertyId
-router.get("/:propertyId", getAboutProject);
-
-// PUT /api/aboutproject/:propertyId
-router.put("/:propertyId", updateAboutProject);
+router.post("/", projectController.createProject); // Create project
+router.get("/:id", projectController.getProjectById); // Get project by ID
+router.put("/:id", projectController.updateProject); // Update project
+router.delete("/:id", projectController.deleteProject); // Delete project
+router.get("/builder/:builderId", projectController.getProjectsByBuilder); // Get all projects by builder
+router.get("/with-properties/:id", projectController.getProjectWithProperties); // Get project with properties
 
 module.exports = router;
