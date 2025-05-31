@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const amenitiesController = require("../controllers/amenitiescontrollers");
+const AmenitiesController = require("../controllers/amenitiescontrollers");
 
-// POST - Add multiple amenities
-router.post("/:propertyId", amenitiesController.create);
-
-// GET - Get amenities by property ID
-router.get("/:propertyId", amenitiesController.getByPropertyId);
-
-// DELETE - Delete amenities by property ID
-router.delete("/:propertyId", amenitiesController.deleteByPropertyId);
+router.post("/create-table", AmenitiesController.createTable);
+router.post("/", AmenitiesController.insertAmenity);
+router.post("/bulk", AmenitiesController.insertMultipleAmenities);
+router.get("/:propertyId", AmenitiesController.getAmenitiesByPropertyId);
+router.delete("/:propertyId", AmenitiesController.deleteAmenitiesByPropertyId);
 
 module.exports = router;
